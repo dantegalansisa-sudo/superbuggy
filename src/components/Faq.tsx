@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { MessageCircle, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import WhatsAppIcon from './WhatsAppIcon';
 import SectionHead from './SectionHead';
 import { useLang } from '../i18n';
 import { waLink } from '../config';
@@ -19,7 +20,7 @@ export default function Faq() {
               <h3>{t.faq.help}</h3>
               <p>{t.faq.helpText}</p>
               <a className="btn btn--wa btn--sm" href={waLink(t.booking.waIntro)} target="_blank" rel="noopener noreferrer">
-                <MessageCircle size={16} /> {t.faq.helpCta}
+                <WhatsAppIcon size={16} /> {t.faq.helpCta}
               </a>
             </div>
           </motion.div>

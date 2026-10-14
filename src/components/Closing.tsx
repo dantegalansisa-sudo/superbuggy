@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, MapPin, MessageCircle, Phone } from 'lucide-react';
+import { ArrowRight, MapPin, Phone } from 'lucide-react';
+import WhatsAppIcon from './WhatsAppIcon';
 import Logo from './Logo';
 import MagneticButton from './MagneticButton';
 import RevealText from './RevealText';
@@ -26,7 +27,7 @@ export function CtaBand() {
             {t.cta.book} <ArrowRight size={18} />
           </MagneticButton>
           <MagneticButton className="btn btn--wa btn--lg" href={waLink(t.booking.waIntro)} target="_blank">
-            <MessageCircle size={18} /> {t.cta.wa}
+            <WhatsAppIcon size={18} /> {t.cta.wa}
           </MagneticButton>
         </div>
       </div>
@@ -66,7 +67,7 @@ export function Footer() {
         <div>
           <h4>{f.contact}</h4>
           <ul className="footer__contact">
-            <li><a href={waLink(t.booking.waIntro)} target="_blank" rel="noopener noreferrer"><MessageCircle size={16} /> WhatsApp {CONFIG.phoneDisplay}</a></li>
+            <li><a href={waLink(t.booking.waIntro)} target="_blank" rel="noopener noreferrer"><WhatsAppIcon size={16} /> WhatsApp {CONFIG.phoneDisplay}</a></li>
             <li><a href={CONFIG.phoneHref}><Phone size={16} /> {CONFIG.phoneDisplay}</a></li>
             <li><MapPin size={16} /> {CONFIG.address}</li>
           </ul>

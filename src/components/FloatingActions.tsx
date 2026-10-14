@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { CalendarCheck, Home, Map, MessageCircle } from 'lucide-react';
+import { CalendarCheck, Home, Map } from 'lucide-react';
+import WhatsAppIcon from './WhatsAppIcon';
 import { useLang } from '../i18n';
 import { useBooking } from '../booking';
 import { waLink } from '../config';
@@ -22,7 +23,7 @@ export default function FloatingActions() {
         transition={{ delay: 2, type: 'spring', stiffness: 200 }}
         whileHover={{ scale: 1.1 }}
       >
-        <MessageCircle size={28} />
+        <WhatsAppIcon size={28} />
         <span className="wa-float__pulse" />
       </motion.a>
 
@@ -31,7 +32,7 @@ export default function FloatingActions() {
         <a href="#inicio"><Home size={20} /><span>{t.mobileBar.home}</span></a>
         <a href="#tours"><Map size={20} /><span>{t.mobileBar.tours}</span></a>
         <button className="mbar__book" onClick={() => book()}><CalendarCheck size={22} /><span>{t.mobileBar.book}</span></button>
-        <a href={wa} target="_blank" rel="noopener noreferrer" className="mbar__wa"><MessageCircle size={20} /><span>{t.mobileBar.wa}</span></a>
+        <a href={wa} target="_blank" rel="noopener noreferrer" className="mbar__wa"><WhatsAppIcon size={20} /><span>{t.mobileBar.wa}</span></a>
       </nav>
     </>
   );

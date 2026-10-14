@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { CheckCircle2, Mail, MapPin, MessageCircle, Phone, Send } from 'lucide-react';
+import { CheckCircle2, Mail, MapPin, Phone, Send } from 'lucide-react';
+import WhatsAppIcon from './WhatsAppIcon';
 import SectionHead from './SectionHead';
 import MagneticButton from './MagneticButton';
 import { useLang } from '../i18n';
@@ -107,7 +108,7 @@ export default function Booking() {
           <ul className="booking__contact">
             <li>
               <a href={waLink(b.waIntro)} target="_blank" rel="noopener noreferrer">
-                <span className="booking__ic booking__ic--wa"><MessageCircle size={20} /></span>
+                <span className="booking__ic booking__ic--wa"><WhatsAppIcon size={20} /></span>
                 <span><small>{b.whatsapp}</small>{CONFIG.phoneDisplay}</span>
               </a>
             </li>
@@ -148,7 +149,7 @@ export default function Booking() {
                 <h3>{b.successTitle}</h3>
                 <p>{CONFIG.bookingEmail ? b.successText : b.successWaText}</p>
                 {CONFIG.bookingEmail && (
-                  <button className="btn btn--wa" onClick={sendWhatsApp}><MessageCircle size={18} /> {b.successWa}</button>
+                  <button className="btn btn--wa" onClick={sendWhatsApp}><WhatsAppIcon size={18} /> {b.successWa}</button>
                 )}
                 <button className="btn btn--link" onClick={() => { setForm(EMPTY); setStatus('idle'); }}>{b.again}</button>
               </motion.div>
@@ -198,7 +199,7 @@ export default function Booking() {
                     <Send size={18} /> {status === 'sending' ? b.sending : b.submit}
                   </MagneticButton>
                   <a className="btn btn--wa btn--lg" href={waLink(b.waIntro)} target="_blank" rel="noopener noreferrer">
-                    <MessageCircle size={18} /> {b.viaWa}
+                    <WhatsAppIcon size={18} /> {b.viaWa}
                   </a>
                 </div>
               </motion.form>
