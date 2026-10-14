@@ -72,10 +72,16 @@ export default function Hero() {
         </div>
 
         <div className="hero__visual">
+          {/* Silueta ondulada del hero (coordenadas relativas 0–1 a la caja de la imagen) */}
+          <svg width="0" height="0" className="sr-only" aria-hidden="true">
+            <clipPath id="hero-wave" clipPathUnits="objectBoundingBox">
+              <path d="M0.05,0.36 C0.09,0.17 0.24,0.05 0.42,0.06 C0.56,0.07 0.63,0.15 0.76,0.08 C0.86,0.03 0.95,0.02 1,0.06 L1,0.6 C0.95,0.67 0.89,0.64 0.82,0.71 C0.75,0.78 0.72,0.9 0.58,0.96 C0.45,1.01 0.27,0.97 0.15,0.86 C0.04,0.76 0.01,0.55 0.05,0.36 Z" />
+            </clipPath>
+          </svg>
           <motion.div
             className="hero__blob"
-            initial={{ clipPath: 'inset(0 0 0 100% round 48% 52% 46% 54%)', opacity: 0 }}
-            animate={{ clipPath: 'inset(0 0 0 0% round 0% 0% 0% 0%)', opacity: 1 }}
+            initial={{ opacity: 0, x: 80, scale: 0.94 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
             transition={{ duration: 1.4, delay: 0.2, ease: EASINGS.cinematic }}
           >
             <motion.img
