@@ -406,9 +406,12 @@ ul, ol { list-style: none; margin: 0; padding: 0; }
   .quick__field + .quick__field { border-left: 0; }
   .quick__field { background: var(--cream); }
   .quick__submit { grid-column: 1 / -1; width: 100%; }
-  .stats { grid-template-columns: 1fr; gap: 6px; margin-top: 24px; }
-  .stat { padding: 10px 4px; }
-  .stat + .stat { border-left: 0; border-top: 1px solid var(--line); }
+  .stats { grid-template-columns: repeat(3, 1fr); margin-top: 22px; }
+  .stat { padding: 4px 10px; gap: 0; }
+  .stat:first-child { padding-left: 0; }
+  .stat > svg { display: none; }
+  .stat strong { font-size: 1.45rem; }
+  .stat div > span { font-size: 0.74rem; line-height: 1.3; }
   .shead { flex-direction: column; align-items: flex-start; margin-bottom: 32px; }
   .why__grid, .reels__grid, .booking__grid, .faq, .steps { grid-template-columns: 1fr; }
   .why__media { padding: 0 24px 40px 0; }
@@ -438,7 +441,13 @@ ul, ol { list-style: none; margin: 0; padding: 0; }
 }
 
 @media (max-width: 600px) {
-  .tours { grid-template-columns: 1fr; }
+  /* Tours en carrusel deslizable: menos scroll en móvil */
+  .tours { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 76%; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; margin-inline: -16px; padding: 4px 16px 18px; scrollbar-width: none; }
+  .tours::-webkit-scrollbar { display: none; }
+  .tour { scroll-snap-align: center; }
+  .tour__img { aspect-ratio: 4 / 3; }
+  .tour__body { padding: 16px; gap: 8px; }
+  .tour__body h3 { font-size: 1.2rem; }
   .exps { grid-template-columns: 1fr 1fr; gap: 10px; }
   .exps .exp:first-child { grid-column: 1 / -1; aspect-ratio: 16 / 10; }
   .exp__label { font-size: 0.88rem; left: 12px; right: 12px; bottom: 12px; }

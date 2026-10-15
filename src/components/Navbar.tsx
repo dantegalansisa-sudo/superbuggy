@@ -29,8 +29,8 @@ export default function Navbar() {
     ['#inicio', t.nav.home],
     ['#tours', t.nav.tours],
     ['#experiencias', t.nav.experiences],
+    ['#videos', t.nav.videos],
     ['#galeria', t.nav.gallery],
-    ['#faq', t.nav.faq],
     ['#reservar', t.nav.contact],
   ];
 

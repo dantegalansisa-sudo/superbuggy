@@ -11,8 +11,8 @@ export const TOURS: Tour[] = [
   {
     id: 'buggy-rio',
     name: 'Buggy Río & Lodo',
-    image: '/images/buggy-rio.webp',
-    text: 'Cruza ríos, atraviesa charcos y senderos de tierra en plena naturaleza dominicana.',
+    image: '/images/buggy-18-agua.webp',
+    text: 'Ríos, charcos y senderos de tierra.',
     tags: ['Río', 'Lodo', 'Senderos'],
     featured: true,
   },
@@ -20,21 +20,21 @@ export const TOURS: Tour[] = [
     id: 'buggy-costa',
     name: 'Buggy Costa & Playa',
     image: '/images/buggy-playa.webp',
-    text: 'Rueda por la arena y disfruta las vistas al Atlántico y a los cruceros de Puerto Plata.',
+    text: 'Arena, mar y vista a los cruceros.',
     tags: ['Playa', 'Vistas', 'Costa'],
   },
   {
     id: 'four-wheel',
     name: 'Four Wheel 4x4',
     image: '/images/atv-rio.webp',
-    text: 'Tu propio four wheel para sentir el agua y la velocidad en cada curva del recorrido.',
+    text: 'Tu propio ATV por agua y montaña.',
     tags: ['ATV', 'Agua', 'Adrenalina'],
   },
   {
     id: 'buggy-grupo',
     name: 'Buggy en Grupo',
-    image: '/images/buggy-18-agua.webp',
-    text: 'Caravana de buggies para amigos, familias y grupos. La mejor forma de compartir la aventura.',
+    image: '/images/buggies-rojos.webp',
+    text: 'Caravana para amigos y familias.',
     tags: ['Grupos', 'Familia', 'Caravana'],
   },
 ];
@@ -54,18 +54,12 @@ export const BOOKING_OPTIONS = [
   'Combo de aventuras',
 ];
 
-// Orden pensado para que la rejilla (4 columnas, altas = 2 filas) cierre sin huecos
+// Orden pensado para que la rejilla (4 columnas, altas = 2 filas) cierre sin huecos: T S S T / S S
 export const GALLERY = [
   { tall: true, src: '/images/buggy-crucero.webp', alt: 'Buggy frente a un crucero en Puerto Plata' },
   { src: '/images/grupo-buggies.webp', alt: 'Grupo celebrando después del tour de buggies' },
   { src: '/images/cascada-grupo.webp', alt: 'Grupo con chalecos en las cascadas' },
-  { tall: true, src: '/images/monos-1.webp', alt: 'Visitante con monos ardilla' },
-  { src: '/images/barco-grupo.webp', alt: 'Amigos en la proa del barco' },
-  { src: '/images/buggies-rojos.webp', alt: 'Caravana de buggies rojos' },
   { tall: true, src: '/images/atv-luces.webp', alt: 'Four wheel cruzando el río' },
-  { src: '/images/cascada-salto.webp', alt: 'Salto en la cascada' },
-  { src: '/images/catamaran-piscina.webp', alt: 'Catamarán con piscina' },
-  { tall: true, src: '/images/buggy-naranja.webp', alt: 'Familia en buggy Super Buggies' },
+  { src: '/images/barco-grupo.webp', alt: 'Amigos en la proa del barco' },
   { src: '/images/monos-grupo.webp', alt: 'Grupo en el parque de monos' },
-  { src: '/images/atv-playa.webp', alt: 'Four wheel en la playa' },
 ];

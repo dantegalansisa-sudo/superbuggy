@@ -33,7 +33,7 @@ export default function Reels() {
   const { t } = useLang();
   const { book } = useBooking();
   return (
-    <section className="section reels">
+    <section className="section reels" id="videos">
       <div className="container reels__grid">
         <div className="reels__copy">
           <SectionHead eyebrow={t.reels.eyebrow} title={t.reels.title} accent={t.reels.titleAccent} light />

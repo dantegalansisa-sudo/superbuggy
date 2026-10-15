@@ -9,8 +9,9 @@ import { useBooking } from '../booking';
 import { BOOKING_OPTIONS } from '../data';
 import { CONFIG, waLink } from '../config';
 
-type Form = { name: string; email: string; phone: string; tour: string; date: string; people: string; pickup: string; message: string };
-const EMPTY: Form = { name: '', email: '', phone: '', tour: '', date: '', people: '2', pickup: '', message: '' };
+// Formulario corto: solo lo necesario para cotizar y confirmar por WhatsApp
+type Form = { name: string; phone: string; tour: string; date: string; people: string };
+const EMPTY: Form = { name: '', phone: '', tour: '', date: '', people: '2' };
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -34,24 +35,21 @@ export default function Booking() {
     }));
   }, [prefill]);
 
-  const set = (k: keyof Form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+  const set = (k: keyof Form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
   const summary = () => {
     const rows: [string, string][] = [
       [b.name, form.name],
-      [b.email, form.email],
       [b.phone, form.phone],
       [b.tour, form.tour || b.tourAny],
       [b.date, form.date],
       [b.people, form.people],
-      [b.pickup, form.pickup],
-      [b.message, form.message],
     ];
     return [b.waIntro, '', ...rows.filter(([, v]) => v.trim()).map(([k, v]) => `• ${k}: ${v}`)].join('\n');
   };
 
-  const valid = () => form.name.trim() && (form.email.trim() || form.phone.trim());
+  const valid = () => form.name.trim() && form.phone.trim();
 
   const sendWhatsApp = () => window.open(waLink(summary()), '_blank', 'noopener');
 
@@ -78,14 +76,10 @@ export default function Booking() {
           _template: 'table',
           _captcha: 'false',
           Nombre: form.name,
-          Correo: form.email,
           Telefono: form.phone,
           Experiencia: form.tour || b.tourAny,
           Fecha: form.date,
           Personas: form.people,
-          Recogida: form.pickup,
-          Mensaje: form.message,
-          ...(form.email ? { _replyto: form.email } : {}),
         }),
       });
       if (!res.ok) throw new Error(String(res.status));
@@ -155,16 +149,12 @@ export default function Booking() {
               </motion.div>
             ) : (
               <motion.form key="form" className="form" onSubmit={onSubmit} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} noValidate>
-                <label className="form__f form__f--full">
+                <label className="form__f">
                   <span>{b.name} *</span>
                   <input required autoComplete="name" value={form.name} onChange={set('name')} />
                 </label>
                 <label className="form__f">
-                  <span>{b.email}</span>
-                  <input type="email" autoComplete="email" value={form.email} onChange={set('email')} />
-                </label>
-                <label className="form__f">
-                  <span>{b.phone}</span>
+                  <span>{b.phone} *</span>
                   <input type="tel" autoComplete="tel" value={form.phone} onChange={set('phone')} />
                 </label>
                 <label className="form__f form__f--full">
@@ -184,14 +174,6 @@ export default function Booking() {
                     {Array.from({ length: 12 }, (_, i) => String(i + 1)).map((n) => <option key={n}>{n}</option>)}
                     <option>13+</option>
                   </select>
-                </label>
-                <label className="form__f form__f--full">
-                  <span>{b.pickup}</span>
-                  <input value={form.pickup} onChange={set('pickup')} />
-                </label>
-                <label className="form__f form__f--full">
-                  <span>{b.message}</span>
-                  <textarea rows={3} placeholder={b.messagePh} value={form.message} onChange={set('message')} />
                 </label>
                 {(hint || status === 'error') && <p className="form__hint" role="alert">{hint || b.error}</p>}
                 <div className="form__actions">
