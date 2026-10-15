@@ -26,3 +26,5 @@ dist-ssr
 # Material original del cliente (fuente, no se publica)
 WhatsApp Unknown*/
 inspiracion/
+
+.vercel
