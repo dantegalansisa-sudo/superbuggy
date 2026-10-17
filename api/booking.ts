@@ -56,12 +56,24 @@ function layout(title: string, intro: string, rows: string, footer: string) {
   </td></tr></table></body></html>`;
 }
 
-async function send(payload: object) {
-  const res = await fetch('https://api.resend.com/emails', {
+const FALLBACK_FROM = 'Super Buggies <onboarding@resend.dev>';
+
+function post(payload: object) {
+  return fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
+}
+
+// Envía con el remitente del dominio; si Resend lo rechaza (dominio aún sin verificar),
+// reintenta con el remitente de prueba de Resend para que la reserva no se pierda.
+async function send(payload: Record<string, unknown>, allowFallback = true) {
+  let res = await post({ from: FROM, ...payload });
+  if (!res.ok && allowFallback && FROM !== FALLBACK_FROM && (res.status === 403 || res.status === 422)) {
+    console.warn('Remitente rechazado, usando el de prueba:', await res.text());
+    res = await post({ from: FALLBACK_FROM, ...payload });
+  }
   if (!res.ok) throw new Error(`Resend ${res.status}: ${await res.text()}`);
   return res.json();
 }
@@ -115,7 +127,6 @@ export async function POST(request: Request) {
 
   try {
     await send({
-      from: FROM,
       to: [TO],
       subject: `Nueva reserva ${data.code}: ${data.excursion} — ${data.name}`,
       ...(validEmail ? { reply_to: data.email } : {}),
@@ -143,7 +154,6 @@ export async function POST(request: Request) {
     ].join('');
     try {
       await send({
-        from: FROM,
         to: [data.email],
         reply_to: TO,
         subject: en ? `Your booking ${data.code} · Super Buggies` : `Tu reserva ${data.code} · Super Buggies`,
@@ -156,7 +166,7 @@ export async function POST(request: Request) {
           `<p style="margin:20px 0 0"><a href="https://wa.me/18098414125" style="display:inline-block;background:#25d366;color:#fff;text-decoration:none;padding:12px 20px;border-radius:999px;font-weight:bold">WhatsApp 809-841-4125</a></p>
            <p style="margin:16px 0 0;font-size:13px;color:#7a6f63"><a href="${SITE}/formas-de-pago" style="color:${ORANGE}">${en ? 'Payment options' : 'Formas de pago'}</a> · <a href="${SITE}/terminos" style="color:${ORANGE}">${en ? 'Terms' : 'Términos'}</a></p>`,
         ),
-      });
+      }, false); // al cliente solo con el remitente del dominio verificado
     } catch (err) {
       // El aviso a la empresa ya salió; un fallo aquí no invalida la reserva
       console.error(err);
