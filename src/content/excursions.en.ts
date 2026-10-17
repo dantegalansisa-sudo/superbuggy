@@ -10,20 +10,20 @@ const WEB_GOGGLES = 'Protective goggles (included when you book online)';
 export const EXCURSIONS_EN: Record<string, Translated> = {
   'buggy-maimon-playa-teco': {
     name: 'Maimón Guzmancito Buggy & Teco Beach',
-    short: 'Puddles, mud, rocky trails and Teco Beach.',
+    short: 'River, mud, rocky trails and Teco Beach in one tour.',
     description:
-      "Our adventure begins in Maimón Guzmancito: you'll drive through water puddles, mud, dust and rocky trails full of adrenaline. We stop at a small traditional Dominican house for coffee, water, fresh fruit and a shot of Mamajuana (bathroom available, and you can buy local accessories). Then we continue to Teco Beach, with time to swim, walk, relax and, if you like, buy food. At the end we head back to finish the tour.",
-    tags: ['Mud', 'Local house', 'Teco Beach'],
+      "One single 2.5-hour excursion with everything on the same route. We leave from Maimón Guzmancito and you'll drive through the river, rocky trails, puddles, mud and dust. First stop: a traditional Dominican house with coffee, water, fresh fruit and a shot of Mamajuana (bathroom available, and you can buy local accessories). Second stop: Teco Beach, with time to swim, walk and relax (you can buy food if you like). After the beach we head back to the company. Choose a double buggy (2 people) or a family buggy (4 people).",
+    tags: ['River', 'Mud', 'Teco Beach'],
     duration: '2 hours 30 minutes',
     schedule: 'Morning and afternoon departures, every day from 8:00 AM to 6:00 PM.',
     priceUnit: 'per person',
     options: [
-      { id: 'buggy-2', label: 'Buggy for 2 people', unit: 'per buggy', seats: 2, priceUSD: 99 },
-      { id: 'buggy-4', label: 'Buggy for 4 people', unit: 'per buggy (US$44 per person)', seats: 4, priceUSD: 176 },
+      { id: 'buggy-2', label: 'Double buggy (2 people)', unit: 'per buggy', seats: 2, priceUSD: 99 },
+      { id: 'buggy-4', label: 'Family buggy (4 people)', unit: 'per buggy (US$44 per person)', seats: 4, priceUSD: 176 },
     ],
     note: LOCAL_NOTE,
     includes: [
-      '4x4 buggy for 2 or 4 people',
+      'Double buggy (2 people) or family buggy (4 people)',
       'Protective helmet',
       WEB_GOGGLES,
       'Drinking water',
@@ -33,7 +33,7 @@ export const EXCURSIONS_EN: Record<string, Translated> = {
       'Stop at Teco Beach',
     ],
     bring: ["Clothes and shoes you don't mind getting dirty or wet", 'Swimsuit', 'Sunscreen', 'Towel', 'Cash if you want to buy food or souvenirs'],
-    highlights: ['Buggy for 2 or 4 people', 'Puddles, mud and rocky trails', 'Traditional Dominican house', 'Swim at Teco Beach'],
+    highlights: ['River, rocky trails, mud and dust', '1st stop: traditional Dominican house', '2nd stop: Teco Beach', 'Double or family buggy'],
   },
   'four-wheel-4x4': {
     name: 'ATV 4x4',

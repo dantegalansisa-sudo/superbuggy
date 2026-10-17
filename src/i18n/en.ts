@@ -44,7 +44,7 @@ const en: Dict = {
     eyebrow: 'Our tours',
     title: 'Ride a buggy',
     titleAccent: 'like never before',
-    text: 'One route, buggies for 2 or 4 people. You drive, we guide.',
+    text: 'One route: river, mud and beach. Double or family buggy. You drive, we guide.',
     details: 'See details',
     book: 'Book',
     priceFrom: 'From',

@@ -42,7 +42,7 @@ const es = {
     eyebrow: 'Nuestros tours',
     title: 'Vive el buggy',
     titleAccent: 'como nunca',
-    text: 'Un recorrido, buggy para 2 o 4 personas. Tú manejas, nosotros te guiamos.',
+    text: 'Un solo recorrido: río, lodo y playa. Buggy doble o familiar. Tú manejas, nosotros te guiamos.',
     details: 'Ver detalles',
     book: 'Reservar',
     priceFrom: 'Desde',
