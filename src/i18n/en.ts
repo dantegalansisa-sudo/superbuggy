@@ -50,6 +50,11 @@ const en: Dict = {
     priceFrom: 'From',
     priceAsk: 'Ask for price',
     tag: 'Most popular',
+    family: 'Family',
+    chooseBuggy: 'Choose your buggy',
+    chooseBuggyText: 'The same full route. Only the buggy size changes.',
+    pick: 'Choose this buggy',
+    picked: 'Selected',
   },
   experiences: {
     eyebrow: 'More adventures',

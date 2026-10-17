@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Backpack, Banknote, Building2, Check, Clock, CreditCard, Lock, ShieldCheck, Sparkles, Sun } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Backpack, Banknote, Building2, Check, Clock, CreditCard, Lock, ShieldCheck, Sparkles, Sun, Users } from 'lucide-react';
 import RevealText from '../components/RevealText';
 import MagneticButton from '../components/MagneticButton';
 import WhatsAppIcon from '../components/WhatsAppIcon';
@@ -10,7 +10,7 @@ import SectionHead from '../components/SectionHead';
 import { PriceTag, TourCard } from '../components/Tours';
 import NotFound from './NotFound';
 import QtyPicker from '../components/QtyPicker';
-import { defaultCounts, fmt, priceLines, totalOf, type Counts } from '../content/pricing';
+import { defaultCounts, fmt, optionCounts, priceLines, totalOf, type Counts } from '../content/pricing';
 import { useLang } from '../i18n';
 import { useBooking } from '../booking';
 import { useSeo } from '../hooks/useSeo';
@@ -44,6 +44,7 @@ function useJsonLd(ex: Excursion | undefined) {
 
 export default function ExcursionPage() {
   const { slug } = useParams();
+  const [search] = useSearchParams();
   const { all, find } = useCatalog();
   const ex = find(slug);
   const { t } = useLang();
@@ -64,7 +65,13 @@ export default function ExcursionPage() {
   if (!ex) return <NotFound />;
 
   const lines = priceLines(ex, t);
-  const counts = picked.slug === ex.slug ? picked.counts : defaultCounts(ex);
+  const preset = ex.options?.find((o) => o.id === search.get('buggy'));
+  const counts = picked.slug === ex.slug ? picked.counts : preset ? optionCounts(preset) : defaultCounts(ex);
+  const choose = (id: string) => {
+    const o = ex.options!.find((x) => x.id === id)!;
+    setPicked({ slug: ex.slug, counts: optionCounts(o) });
+    document.querySelector('.xcard')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
   const total = totalOf(lines, counts);
 
   const others = all.filter((e) => e.slug !== ex.slug).sort((a, b) => Number(b.category === ex.category) - Number(a.category === ex.category)).slice(0, 3);
@@ -100,6 +107,27 @@ export default function ExcursionPage() {
               <p className="eyebrow">{x.about}</p>
               <p className="xbody__desc">{ex.description}</p>
               {ex.note && <p className="xnote">{ex.note}</p>}
+              {ex.options?.length ? (
+                <div className="xbuggy">
+                  <h2 className="xbody__h"><Users size={20} /> {t.tours.chooseBuggy}</h2>
+                  <p className="xbuggy__text">{t.tours.chooseBuggyText}</p>
+                  <div className="xbuggy__grid">
+                    {ex.options.map((o) => {
+                      const on = (counts[o.id] ?? 0) > 0;
+                      return (
+                        <button key={o.id} className={`xbuggy__card${on ? ' is-on' : ''}`} onClick={() => choose(o.id)}>
+                          <img src={o.image ?? ex.image} alt={o.label} loading="lazy" />
+                          <span className="xbuggy__body">
+                            <strong>{o.label}</strong>
+                            <span className="xbuggy__price">US${o.priceUSD} <small>{o.unit}</small></span>
+                            <span className="xbuggy__pick">{on ? <><Check size={14} /> {t.tours.picked}</> : t.tours.pick}</span>
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : null}
             </motion.div>
 
             <h2 className="xbody__h"><Sparkles size={20} /> {x.highlights}</h2>
@@ -149,7 +177,7 @@ export default function ExcursionPage() {
             {ex.schedule && <p className="xcard__row xcard__row--small"><Sun size={18} /> {ex.schedule}</p>}
             <div className="xcard__calc">
               <span>{ex.options?.length ? t.checkout.vehicles : x.howMany}</span>
-              <QtyPicker lines={lines} counts={counts} onChange={(c) => setPicked({ slug: ex.slug, counts: c })} />
+              <QtyPicker lines={lines} counts={counts} onChange={(c) => setPicked({ slug: ex.slug, counts: c })} personLabel={[t.quick.person, t.quick.persons]} />
             </div>
             {total && (
               <p className="xcard__total"><span>{t.checkout.total}</span> {fmt(total)}</p>

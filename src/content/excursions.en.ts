@@ -18,8 +18,8 @@ export const EXCURSIONS_EN: Record<string, Translated> = {
     schedule: 'Morning and afternoon departures, every day from 8:00 AM to 6:00 PM.',
     priceUnit: 'per person',
     options: [
-      { id: 'buggy-2', label: 'Double buggy (2 people)', unit: 'per buggy', seats: 2, priceUSD: 99 },
-      { id: 'buggy-4', label: 'Family buggy (4 people)', unit: 'per buggy (US$44 per person)', seats: 4, priceUSD: 176 },
+      { id: 'buggy-2', label: 'Double buggy (2 people)', unit: 'per buggy', seats: 2, priceUSD: 99, image: '/images/buggy-18-agua.webp', short: 'For couples or friends. River, mud and Teco Beach.' },
+      { id: 'buggy-4', label: 'Family buggy (4 people)', unit: 'per person', seats: 4, priceUSD: 44, perPerson: true, image: '/images/buggy-naranja.webp', short: 'For families and groups of 4. The same full route.' },
     ],
     note: LOCAL_NOTE,
     includes: [

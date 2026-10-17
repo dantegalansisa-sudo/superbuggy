@@ -177,3 +177,20 @@
 .tours--2 { grid-template-columns: repeat(2, 1fr); }
 .tours--2 .tour__img { aspect-ratio: 16 / 10; }
 @media (max-width: 600px) { .tours--2 { grid-template-columns: none; } .tours--2 .tour__img { aspect-ratio: 4 / 3; } }
+
+/* Buggy familiar visible */
+.tour__badge--family { background: var(--ink); }
+.xbuggy { margin-top: 8px; }
+.xbuggy__text { color: var(--muted); margin: -8px 0 14px; }
+.xbuggy__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.xbuggy__card { display: flex; flex-direction: column; overflow: hidden; border-radius: 20px; border: 2px solid var(--sand-2); background: #fff; text-align: left; transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s; }
+.xbuggy__card:hover { transform: translateY(-4px); box-shadow: var(--shadow-sm); }
+.xbuggy__card.is-on { border-color: var(--orange); box-shadow: 0 0 0 4px rgba(224, 86, 27, 0.12); }
+.xbuggy__card img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+.xbuggy__body { display: flex; flex-direction: column; gap: 6px; padding: 14px 16px 16px; }
+.xbuggy__body strong { font-family: var(--f-display); font-size: 1.15rem; }
+.xbuggy__price { font-family: var(--f-display); font-size: 1.4rem; font-weight: 800; }
+.xbuggy__price small { display: block; font-family: var(--f-body); font-size: 0.78rem; font-weight: 600; color: var(--muted); }
+.xbuggy__pick { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; padding: 7px 14px; border-radius: 999px; background: var(--sand); font-size: 0.82rem; font-weight: 800; }
+.xbuggy__card.is-on .xbuggy__pick { background: var(--orange); color: #fff; }
+@media (max-width: 600px) { .xbuggy__grid { grid-template-columns: 1fr; } }

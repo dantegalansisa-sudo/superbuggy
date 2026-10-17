@@ -122,3 +122,5 @@
 .qp__info small { display: block; font-size: 0.78rem; color: var(--muted); }
 .qp .co__qty { min-height: 44px; flex-shrink: 0; }
 .xcard__calc { grid-template-columns: 1fr; }
+
+.qp__people { color: var(--orange-2) !important; font-weight: 700; }

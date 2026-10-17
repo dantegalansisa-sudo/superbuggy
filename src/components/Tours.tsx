@@ -1,11 +1,12 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Clock, Flame } from 'lucide-react';
+import { ArrowRight, Clock, Flame, Users } from 'lucide-react';
 import SectionHead from './SectionHead';
 import { useLang } from '../i18n';
 import { useBooking } from '../booking';
 import { excursionPath, type Excursion } from '../data';
 import { useCatalog } from '../content/catalog';
+import { optionCounts } from '../content/pricing';
 import { cardVariants, containerVariants } from '../utils/easings';
 
 export function PriceTag({ ex, unit = false }: { ex: Excursion; unit?: boolean }) {
@@ -21,6 +22,46 @@ export function PriceTag({ ex, unit = false }: { ex: Excursion; unit?: boolean }
     </span>
   ) : (
     <span className="price price--ask">{t.tours.priceAsk}</span>
+  );
+}
+
+type Variant = NonNullable<Excursion['options']>[number];
+
+// Tarjeta de un tipo de buggy (doble / familiar): mismo recorrido, con ese buggy ya elegido
+export function VariantCard({ tour, v }: { tour: Excursion; v: Variant }) {
+  const { t } = useLang();
+  const { book } = useBooking();
+  const to = `${excursionPath(tour.slug)}?buggy=${v.id}`;
+  return (
+    <motion.article className="tour" variants={cardVariants} whileHover={{ y: -8 }}>
+      <Link to={to} className="tour__img" aria-label={`${t.tours.details}: ${v.label}`}>
+        <img src={v.image ?? tour.image} alt={v.label} loading="lazy" />
+        {v.seats >= 4 ? (
+          <span className="tour__badge tour__badge--family"><Users size={14} /> {t.tours.family}</span>
+        ) : (
+          tour.featured && <span className="tour__badge"><Flame size={14} /> {t.tours.tag}</span>
+        )}
+      </Link>
+      <div className="tour__body">
+        <h3><Link to={to}>{v.label}</Link></h3>
+        <ul className="tour__tags">
+          {tour.tags.map((tag) => <li key={tag}>{tag}</li>)}
+        </ul>
+        <p>{v.short ?? tour.short}</p>
+        <div className="tour__meta">
+          <span className="price">US${v.priceUSD}<em className="price__unit">{v.unit}</em></span>
+          {tour.duration && <span><Clock size={14} /> {tour.duration}</span>}
+        </div>
+        <div className="tour__actions">
+          <button className="btn btn--primary btn--sm" onClick={() => book({ tour: tour.slug, counts: optionCounts(v) })}>
+            {t.tours.book}
+          </button>
+          <Link to={to} className="tour__cta">
+            {t.tours.details} <span><ArrowRight size={16} /></span>
+          </Link>
+        </div>
+      </div>
+    </motion.article>
   );
 }
 
@@ -60,6 +101,7 @@ export default function Tours() {
   const { t } = useLang();
   const { book } = useBooking();
   const { tours } = useCatalog();
+  const cards = tours.reduce((n, x) => n + (x.options?.length || 1), 0);
   return (
     <section className="section" id="tours">
       <div className="container">
@@ -70,8 +112,12 @@ export default function Tours() {
           text={t.tours.text}
           aside={<button className="btn btn--outline btn--sm" onClick={() => book()}>{t.nav.book} <ArrowRight size={16} /></button>}
         />
-        <motion.div className={`tours${tours.length === 2 ? ' tours--2' : ''}`} variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.15 }}>
-          {tours.map((tour) => <TourCard key={tour.slug} tour={tour} />)}
+        <motion.div className={`tours${cards === 2 ? ' tours--2' : cards === 3 ? ' tours--3' : ''}`} variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.15 }}>
+          {tours.map((tour) =>
+            tour.options?.length
+              ? tour.options.map((v) => <VariantCard key={`${tour.slug}-${v.id}`} tour={tour} v={v} />)
+              : <TourCard key={tour.slug} tour={tour} />,
+          )}
         </motion.div>
       </div>
     </section>

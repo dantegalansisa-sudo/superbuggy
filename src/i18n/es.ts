@@ -48,6 +48,11 @@ const es = {
     priceFrom: 'Desde',
     priceAsk: 'Consultar precio',
     tag: 'Más popular',
+    family: 'Familiar',
+    chooseBuggy: 'Elige tu buggy',
+    chooseBuggyText: 'El mismo recorrido completo. Solo cambia el tamaño del buggy.',
+    pick: 'Elegir este buggy',
+    picked: 'Elegido',
   },
   experiences: {
     eyebrow: 'Más aventuras',

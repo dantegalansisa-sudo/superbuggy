@@ -197,7 +197,7 @@ export default function Checkout({ prefill, onClose }: { prefill?: Prefill; onCl
             {ex && (
               <div className="co__field">
                 <span>{ex.options?.length ? c.vehicles : c.people}</span>
-                <QtyPicker lines={lines} counts={counts} onChange={setCounts} />
+                <QtyPicker lines={lines} counts={counts} onChange={setCounts} personLabel={[t.quick.person, t.quick.persons]} />
               </div>
             )}
 

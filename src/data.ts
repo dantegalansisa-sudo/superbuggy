@@ -17,7 +17,8 @@ export type Excursion = {
   priceUnit?: string; // por defecto 'por persona'
   priceBasis?: 'person' | 'buggy'; // cómo se cuenta el total: por persona (defecto) o por buggy doble
   // Tipos de vehículo con su precio (ej. buggy de 2 y de 4 personas). Si existen, el cliente elige cantidades de cada uno.
-  options?: { id: string; label: string; unit: string; seats: number; priceUSD: number }[];
+  // perPerson: el precio es por persona y el contador cuenta personas (ej. buggy familiar a US$44 por persona)
+  options?: { id: string; label: string; unit: string; seats: number; priceUSD: number; perPerson?: boolean; image?: string; short?: string }[];
   note?: string; // aviso destacado (ofertas, condiciones)
   includes: string[];
   bring: string[];
@@ -44,8 +45,8 @@ export const EXCURSIONS: Excursion[] = [
     priceUSD: 44,
     priceUnit: 'por persona',
     options: [
-      { id: 'buggy-2', label: 'Buggy doble (2 personas)', unit: 'por buggy', seats: 2, priceUSD: 99 },
-      { id: 'buggy-4', label: 'Buggy familiar (4 personas)', unit: 'por buggy (US$44 por persona)', seats: 4, priceUSD: 176 },
+      { id: 'buggy-2', label: 'Buggy doble (2 personas)', unit: 'por buggy', seats: 2, priceUSD: 99, image: '/images/buggy-18-agua.webp', short: 'Para parejas o amigos. Río, lodo y Playa Teco.' },
+      { id: 'buggy-4', label: 'Buggy familiar (4 personas)', unit: 'por persona', seats: 4, priceUSD: 44, perPerson: true, image: '/images/buggy-naranja.webp', short: 'Para familias y grupos de 4. El mismo recorrido completo.' },
     ],
     note: LOCAL_NOTE,
     includes: [
