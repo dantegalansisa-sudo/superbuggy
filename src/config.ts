@@ -10,9 +10,9 @@ export const CONFIG = {
   email: 'superbuggiesmaimonpop@gmail.com',
   address: 'Calle Principal #2, Los Ciruelos, Montellano, Puerto Plata',
   mapQuery: 'Los Ciruelos, Montellano, Puerto Plata, República Dominicana',
-  // Correo donde llegan las reservas del formulario (vía FormSubmit.co).
-  // El primer envío manda un correo de activación a esta dirección: hay que confirmarlo una vez.
-  bookingEmail: 'superbuggiesmaimonpop@gmail.com',
+  // Las reservas se envían a esta función (api/booking.ts), que manda el correo con Resend.
+  // El correo de destino y la clave se configuran en Vercel (BOOKING_TO, RESEND_API_KEY).
+  bookingEndpoint: '/api/booking',
 };
 
 // Formas de pago

@@ -7,6 +7,7 @@ import { useToast } from './Toast';
 import { useLang } from '../i18n';
 import { useCatalog } from '../content/catalog';
 import { CONFIG, PAYMENTS, paypalLink, waLink } from '../config';
+import { EXCURSIONS } from '../data';
 import type { Prefill } from '../booking';
 
 type Method = 'paypal' | 'bank' | 'later';
@@ -75,28 +76,25 @@ export default function Checkout({ prefill, onClose }: { prefill?: Prefill; onCl
     return [w.hello, '', ...rows.filter(([, v]) => v.trim()).map(([k, v]) => `• ${k}: ${v}`)].join('\n');
   };
 
-  // Al llegar al pago se avisa por correo a la empresa (queda registrada aunque el cliente no termine)
+  // Al llegar al pago se avisa por correo a la empresa (queda registrada aunque el cliente no termine).
+  // El envío lo hace la función /api/booking con Resend; la clave vive solo en Vercel.
   const notifyEmail = () => {
-    if (!CONFIG.bookingEmail) return;
-    fetch(`https://formsubmit.co/ajax/${CONFIG.bookingEmail}`, {
+    fetch(CONFIG.bookingEndpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      headers: { 'Content-Type': 'application/json' },
+      keepalive: true,
       body: JSON.stringify({
-        _subject: `Nueva reserva ${code}: ${ex?.name ?? ''} — ${name}`,
-        _template: 'table',
-        _captcha: 'false',
-        Codigo: code,
-        Estado: 'Pendiente de pago',
-        Excursion: ex?.name,
-        Fecha: date,
-        Cantidad: qtyLabel,
-        Total: total ? fmt(total) : 'A confirmar',
-        Nombre: name,
-        WhatsApp: phone,
-        Correo: email,
-        Recogida: pickup,
-        Idioma: lang,
-        ...(email ? { _replyto: email } : {}),
+        code,
+        status: 'Pendiente de pago',
+        excursion: EXCURSIONS.find((e) => e.slug === slug)?.name ?? ex?.name, // la empresa lo recibe en español
+        date,
+        quantity: qtyLabel,
+        total: total ? fmt(total) : 'A confirmar',
+        name,
+        phone,
+        email,
+        pickup,
+        lang,
       }),
     }).catch(() => {});
   };
