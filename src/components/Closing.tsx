@@ -1,9 +1,41 @@
-import { MapPin, Phone } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { ArrowRight, Mail, MapPin, Phone } from 'lucide-react';
 import WhatsAppIcon from './WhatsAppIcon';
 import Logo from './Logo';
+import MagneticButton from './MagneticButton';
+import RevealText from './RevealText';
 import { useLang } from '../i18n';
+import { useBooking } from '../booking';
+import { useParallax } from '../hooks/useParallax';
 import { CONFIG, waLink } from '../config';
-import { EXPERIENCES, TOURS } from '../data';
+import { EXCURSIONS, excursionPath } from '../data';
+
+// Banda corta de llamada a la acción entre secciones
+export function CtaBand() {
+  const { t } = useLang();
+  const { book } = useBooking();
+  const { ref, y } = useParallax(60);
+  return (
+    <section className="cta" ref={ref}>
+      <motion.img src="/images/barco-proa.webp" alt="" className="cta__img" style={{ y, scale: 1.25 }} loading="lazy" />
+      <div className="cta__shade" />
+      <div className="container cta__inner">
+        <p className="eyebrow eyebrow--light">{t.cta.eyebrow}</p>
+        <RevealText tag="h2" className="cta__title">{t.cta.title}</RevealText>
+        <p className="cta__text">{t.cta.text}</p>
+        <div className="cta__btns">
+          <MagneticButton className="btn btn--primary btn--lg" onClick={() => book()}>
+            {t.cta.book} <ArrowRight size={18} />
+          </MagneticButton>
+          <MagneticButton className="btn btn--wa btn--lg" href={waLink(t.booking.waIntro)} target="_blank">
+            <WhatsAppIcon size={18} /> {t.cta.wa}
+          </MagneticButton>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export function Footer() {
   const { t } = useLang();
@@ -14,24 +46,31 @@ export function Footer() {
         <div>
           <Logo light />
           <p className="footer__tag">{f.tagline}</p>
-        </div>
-        <div>
-          <h4>{f.links}</h4>
-          <ul>
-            <li><a href="#inicio">{t.nav.home}</a></li>
-            <li><a href="#tours">{t.nav.tours}</a></li>
-            <li><a href="#experiencias">{t.nav.experiences}</a></li>
-            <li><a href="#galeria">{t.nav.gallery}</a></li>
-            <li><a href="#videos">{t.nav.videos}</a></li>
-            <li><a href="#reservar">{t.nav.book}</a></li>
-          </ul>
+          <a className="btn btn--wa btn--sm footer__wa" href={waLink(t.booking.waIntro)} target="_blank" rel="noopener noreferrer">
+            <WhatsAppIcon size={16} /> {t.nav.book}
+          </a>
         </div>
         <div>
           <h4>{f.adventures}</h4>
           <ul>
-            {[...TOURS.slice(0, 3), ...EXPERIENCES.slice(0, 3)].map((x) => (
-              <li key={x.id}><a href={TOURS.some((tour) => tour.id === x.id) ? '#tours' : '#experiencias'}>{x.name}</a></li>
+            {EXCURSIONS.map((x) => (
+              <li key={x.slug}><Link to={excursionPath(x.slug)}>{x.name}</Link></li>
             ))}
+          </ul>
+        </div>
+        <div>
+          <h4>{f.links}</h4>
+          <ul>
+            <li><Link to="/#tours">{t.nav.tours}</Link></li>
+            <li><Link to="/#videos">{t.nav.videos}</Link></li>
+            <li><Link to="/#galeria">{t.nav.gallery}</Link></li>
+            <li><Link to="/#reservar">{t.nav.book}</Link></li>
+          </ul>
+          <h4 className="footer__h-gap">{f.legalTitle}</h4>
+          <ul>
+            <li><Link to="/formas-de-pago">{t.legal.payments}</Link></li>
+            <li><Link to="/terminos">{t.legal.terms}</Link></li>
+            <li><Link to="/privacidad">{t.legal.privacy}</Link></li>
           </ul>
         </div>
         <div>
@@ -39,12 +78,17 @@ export function Footer() {
           <ul className="footer__contact">
             <li><a href={waLink(t.booking.waIntro)} target="_blank" rel="noopener noreferrer"><WhatsAppIcon size={16} /> WhatsApp {CONFIG.phoneDisplay}</a></li>
             <li><a href={CONFIG.phoneHref}><Phone size={16} /> {CONFIG.phoneDisplay}</a></li>
+            <li><a href={`mailto:${CONFIG.email}`}><Mail size={16} /> {CONFIG.email}</a></li>
             <li><MapPin size={16} /> {CONFIG.address}</li>
           </ul>
         </div>
       </div>
       <div className="container footer__bottom">
-        <span>© {new Date().getFullYear()} {CONFIG.brand}. {f.rights}</span>
+        <span>© {new Date().getFullYear()} {CONFIG.legalName} · RNC {CONFIG.rnc}. {f.rights}</span>
+        <span className="footer__links">
+          <Link to="/terminos">{t.legal.terms}</Link>
+          <Link to="/privacidad">{t.legal.privacy}</Link>
+        </span>
         <span className="footer__slogan">{f.slogan}</span>
       </div>
     </footer>

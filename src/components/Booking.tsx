@@ -7,6 +7,7 @@ import MagneticButton from './MagneticButton';
 import { useLang } from '../i18n';
 import { useBooking } from '../booking';
 import { BOOKING_OPTIONS } from '../data';
+import { Link } from 'react-router-dom';
 import { CONFIG, waLink } from '../config';
 
 // Formulario corto: solo lo necesario para cotizar y confirmar por WhatsApp
@@ -15,13 +16,18 @@ const EMPTY: Form = { name: '', phone: '', tour: '', date: '', people: '2' };
 
 const today = () => new Date().toISOString().slice(0, 10);
 
-export default function Booking() {
+export default function Booking({ defaultTour = '' }: { defaultTour?: string }) {
   const { t } = useLang();
   const b = t.booking;
   const { prefill } = useBooking();
-  const [form, setForm] = useState<Form>(EMPTY);
+  const [form, setForm] = useState<Form>({ ...EMPTY, tour: defaultTour });
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [hint, setHint] = useState('');
+
+  // En la página de una excursión el formulario ya viene con esa excursión elegida
+  useEffect(() => {
+    if (defaultTour) setForm((f) => ({ ...f, tour: defaultTour }));
+  }, [defaultTour]);
 
   // Datos enviados desde el hero o desde una tarjeta de tour
   useEffect(() => {
@@ -112,11 +118,11 @@ export default function Booking() {
                 <span><small>{b.call}</small>{CONFIG.phoneDisplay}</span>
               </a>
             </li>
-            {CONFIG.bookingEmail && (
+            {CONFIG.email && (
               <li>
-                <a href={`mailto:${CONFIG.bookingEmail}`}>
+                <a href={`mailto:${CONFIG.email}`}>
                   <span className="booking__ic"><Mail size={20} /></span>
-                  <span><small>Email</small>{CONFIG.bookingEmail}</span>
+                  <span><small>Email</small>{CONFIG.email}</span>
                 </a>
               </li>
             )}
@@ -145,7 +151,8 @@ export default function Booking() {
                 {CONFIG.bookingEmail && (
                   <button className="btn btn--wa" onClick={sendWhatsApp}><WhatsAppIcon size={18} /> {b.successWa}</button>
                 )}
-                <button className="btn btn--link" onClick={() => { setForm(EMPTY); setStatus('idle'); }}>{b.again}</button>
+                <Link className="btn btn--outline btn--sm" to="/formas-de-pago">{b.successPay}</Link>
+                <button className="btn btn--link" onClick={() => { setForm({ ...EMPTY, tour: defaultTour }); setStatus('idle'); }}>{b.again}</button>
               </motion.div>
             ) : (
               <motion.form key="form" className="form" onSubmit={onSubmit} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} noValidate>

@@ -1,17 +1,18 @@
 import { MotionConfig } from 'framer-motion';
+import { Route, Routes } from 'react-router-dom';
 import { LangProvider } from './i18n';
 import { BookingProvider } from './booking';
 import { ToastProvider } from './components/Toast';
 import CustomCursor from './components/CustomCursor';
 import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Tours from './components/Tours';
-import Experiences from './components/Experiences';
-import Reels from './components/Reels';
-import Gallery from './components/Gallery';
-import Booking from './components/Booking';
 import { Footer } from './components/Closing';
 import FloatingActions from './components/FloatingActions';
+import ScrollManager from './components/ScrollManager';
+import Home from './pages/Home';
+import ExcursionPage from './pages/Excursion';
+import PaymentsPage from './pages/Payments';
+import LegalPage from './pages/Legal';
+import NotFound from './pages/NotFound';
 
 export default function App() {
   return (
@@ -19,15 +20,18 @@ export default function App() {
       <LangProvider>
         <ToastProvider>
           <BookingProvider>
+            <ScrollManager />
             <CustomCursor />
             <Navbar />
             <main>
-              <Hero />
-              <Tours />
-              <Experiences />
-              <Reels />
-              <Gallery />
-              <Booking />
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/excursiones/:slug" element={<ExcursionPage />} />
+                <Route path="/formas-de-pago" element={<PaymentsPage />} />
+                <Route path="/privacidad" element={<LegalPage doc="privacy" />} />
+                <Route path="/terminos" element={<LegalPage doc="terms" />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
             </main>
             <Footer />
             <FloatingActions />

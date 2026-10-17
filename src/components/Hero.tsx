@@ -1,15 +1,24 @@
-import { useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { ArrowRight, CalendarDays, MapPin, Mountain, ShieldCheck, Users } from 'lucide-react';
 import RevealText from './RevealText';
 import MagneticButton from './MagneticButton';
 import AnimatedCounter from './AnimatedCounter';
 import { useLang } from '../i18n';
 import { useBooking } from '../booking';
-import { BOOKING_OPTIONS } from '../data';
+import { BOOKING_OPTIONS, HERO_SLIDES, excursionPath } from '../data';
 import { EASINGS } from '../utils/easings';
 
 const today = () => new Date().toISOString().slice(0, 10);
+const MotionLink = motion.create(Link);
+const SLIDE_MS = 5500;
+
+// Dos formas de ola con la misma estructura de comandos para poder interpolarlas
+const WAVE_A =
+  'M0.02,0.5 C0.02,0.28 0.14,0.1 0.32,0.07 C0.46,0.05 0.54,0.13 0.68,0.08 C0.8,0.04 0.9,0 1,0.03 L1,0.66 C0.94,0.6 0.86,0.62 0.8,0.7 C0.73,0.79 0.71,0.95 0.56,0.98 C0.43,1 0.36,0.88 0.24,0.9 C0.12,0.92 0.03,0.75 0.02,0.5 Z';
+const WAVE_B =
+  'M0.03,0.46 C0.04,0.25 0.17,0.08 0.34,0.09 C0.48,0.1 0.56,0.17 0.7,0.11 C0.82,0.06 0.91,0.02 1,0.06 L1,0.62 C0.93,0.57 0.85,0.66 0.79,0.74 C0.72,0.83 0.68,0.97 0.53,0.97 C0.4,0.97 0.34,0.85 0.21,0.88 C0.1,0.9 0.03,0.7 0.03,0.46 Z';
 
 export default function Hero() {
   const { t } = useLang();
@@ -17,6 +26,13 @@ export default function Hero() {
   const [tour, setTour] = useState('');
   const [date, setDate] = useState('');
   const [people, setPeople] = useState('2');
+  const [slide, setSlide] = useState(0);
+
+  // Carrusel automático; se reinicia el temporizador si el usuario elige una foto
+  useEffect(() => {
+    const id = window.setTimeout(() => setSlide((i) => (i + 1) % HERO_SLIDES.length), SLIDE_MS);
+    return () => window.clearTimeout(id);
+  }, [slide]);
 
   const { scrollY } = useScroll();
   const imgScale = useTransform(scrollY, [0, 700], [1, 1.12]);
@@ -24,9 +40,9 @@ export default function Hero() {
   const cardsY = useTransform(scrollY, [0, 700], [0, -70]);
 
   const cards = [
-    { src: '/images/playa-grupo.webp', label: t.hero.cards[0], rot: -6 },
-    { src: '/images/cascada-tobogan.webp', label: t.hero.cards[1], rot: 3 },
-    { src: '/images/catamaran.webp', label: t.hero.cards[2], rot: -2 },
+    { src: '/images/playa-grupo.webp', label: t.hero.cards[0], rot: -6, slug: 'playas' },
+    { src: '/images/cascada-tobogan.webp', label: t.hero.cards[1], rot: 3, slug: 'cascadas-toboganes' },
+    { src: '/images/catamaran.webp', label: t.hero.cards[2], rot: -2, slug: 'catamaran-fiesta' },
   ];
   const statIcons = [Mountain, ShieldCheck, Users];
 
@@ -72,24 +88,42 @@ export default function Hero() {
         </div>
 
         <div className="hero__visual">
-          {/* Silueta ondulada del hero (coordenadas relativas 0–1 a la caja de la imagen) */}
+          {/* Silueta en forma de ola (coordenadas 0–1 de la caja); se mueve suave entre dos formas */}
           <svg width="0" height="0" className="sr-only" aria-hidden="true">
             <clipPath id="hero-wave" clipPathUnits="objectBoundingBox">
-              <path d="M0.05,0.36 C0.09,0.17 0.24,0.05 0.42,0.06 C0.56,0.07 0.63,0.15 0.76,0.08 C0.86,0.03 0.95,0.02 1,0.06 L1,0.6 C0.95,0.67 0.89,0.64 0.82,0.71 C0.75,0.78 0.72,0.9 0.58,0.96 C0.45,1.01 0.27,0.97 0.15,0.86 C0.04,0.76 0.01,0.55 0.05,0.36 Z" />
+              <motion.path d={WAVE_A} animate={{ d: [WAVE_A, WAVE_B, WAVE_A] }} transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }} />
             </clipPath>
           </svg>
           <motion.div
-            className="hero__blob"
+            className="hero__frame"
             initial={{ opacity: 0, x: 80, scale: 0.94 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             transition={{ duration: 1.4, delay: 0.2, ease: EASINGS.cinematic }}
           >
-            <motion.img
-              src="/images/hero.webp"
-              alt="Pareja manejando un buggy por un sendero con vista al mar Caribe"
-              style={{ scale: imgScale, y: imgY }}
-              fetchPriority="high"
-            />
+            <svg className="hero__outline" viewBox="0 0 1 1" preserveAspectRatio="none" aria-hidden="true">
+              <motion.path d={WAVE_A} animate={{ d: [WAVE_B, WAVE_A, WAVE_B] }} transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }} />
+            </svg>
+            <div className="hero__blob">
+              <motion.div className="hero__slides" style={{ scale: imgScale, y: imgY }}>
+                <AnimatePresence initial={false}>
+                  <motion.img
+                    key={slide}
+                    src={HERO_SLIDES[slide].src}
+                    alt={HERO_SLIDES[slide].alt}
+                    initial={{ opacity: 0, scale: 1.14 }}
+                    animate={{ opacity: 1, scale: 1.02 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ opacity: { duration: 1.1 }, scale: { duration: SLIDE_MS / 1000 + 1.2, ease: 'linear' } }}
+                    fetchPriority={slide === 0 ? 'high' : 'auto'}
+                  />
+                </AnimatePresence>
+              </motion.div>
+            </div>
+            <div className="hero__dots" role="tablist" aria-label="Fotos">
+              {HERO_SLIDES.map((h, i) => (
+                <button key={h.src} role="tab" aria-selected={i === slide} aria-label={h.alt} className={i === slide ? 'is-active' : undefined} onClick={() => setSlide(i)} />
+              ))}
+            </div>
           </motion.div>
           <motion.p
             className="hero__script"
@@ -111,8 +145,8 @@ export default function Hero() {
           </motion.div>
           <motion.div className="hero__cards" style={{ y: cardsY }}>
             {cards.map((c, i) => (
-              <motion.a
-                href="#experiencias"
+              <MotionLink
+                to={excursionPath(c.slug)}
                 key={c.src}
                 className="polaroid"
                 initial={{ opacity: 0, y: 60, rotate: 0 }}
@@ -122,7 +156,7 @@ export default function Hero() {
               >
                 <img src={c.src} alt="" loading="lazy" />
                 <span>{c.label}</span>
-              </motion.a>
+              </MotionLink>
             ))}
           </motion.div>
         </div>

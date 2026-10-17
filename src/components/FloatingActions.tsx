@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { CalendarCheck, Home, Map } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import WhatsAppIcon from './WhatsAppIcon';
 import { useLang } from '../i18n';
 import { useBooking } from '../booking';
@@ -29,8 +30,8 @@ export default function FloatingActions() {
 
       {/* Móvil: barra inferior con accesos rápidos */}
       <nav className="mbar" aria-label="Accesos rápidos">
-        <a href="#inicio"><Home size={20} /><span>{t.mobileBar.home}</span></a>
-        <a href="#tours"><Map size={20} /><span>{t.mobileBar.tours}</span></a>
+        <Link to="/#inicio"><Home size={20} /><span>{t.mobileBar.home}</span></Link>
+        <Link to="/#tours"><Map size={20} /><span>{t.mobileBar.tours}</span></Link>
         <button className="mbar__book" onClick={() => book()}><CalendarCheck size={22} /><span>{t.mobileBar.book}</span></button>
         <a href={wa} target="_blank" rel="noopener noreferrer" className="mbar__wa"><WhatsAppIcon size={20} /><span>{t.mobileBar.wa}</span></a>
       </nav>
