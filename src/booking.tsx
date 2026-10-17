@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useState, type ReactNode } from
 import { useLocation, useNavigate } from 'react-router-dom';
 
 // tour: slug (o nombre) de la excursión; people: cantidad de personas o buggies
-export type Prefill = { tour?: string; date?: string; people?: string; nonce: number };
+export type Prefill = { tour?: string; date?: string; people?: string; counts?: Record<string, number>; nonce: number };
 
 type Ctx = {
   prefill: Prefill;

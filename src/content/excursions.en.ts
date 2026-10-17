@@ -2,12 +2,10 @@ import type { Excursion } from '../data';
 
 // English text for each excursion (same slug as in data.ts). Photos, prices and duration numbers come from data.ts.
 type Translated = Pick<Excursion, 'name' | 'short' | 'description' | 'tags' | 'includes' | 'bring' | 'highlights'> &
-  Partial<Pick<Excursion, 'priceUnit' | 'note' | 'duration' | 'schedule'>>;
+  Partial<Pick<Excursion, 'priceUnit' | 'note' | 'duration' | 'schedule' | 'options'>>;
 
-const BRING_DEFAULT = ['Clothes that can get muddy or wet', 'Sunscreen', 'A change of clothes', 'Closed-toe shoes'];
-const RIDE_INCLUDES = ['Protective helmet', 'Goggles', 'Bottle of water per person', 'Shot of mamajuana', 'Local guide', 'Full insurance'];
-const LOCAL_NOTE = 'Local customer? Ask about our deals for groups and families.';
-const DOUBLE_BUGGY = 'per double buggy (2 people)';
+const LOCAL_NOTE = 'Book on our website and goggles are included. Local customer? Ask about our deals.';
+const WEB_GOGGLES = 'Protective goggles (included when you book online)';
 
 export const EXCURSIONS_EN: Record<string, Translated> = {
   'buggy-maimon-playa-teco': {
@@ -18,11 +16,16 @@ export const EXCURSIONS_EN: Record<string, Translated> = {
     tags: ['Mud', 'Local house', 'Teco Beach'],
     duration: '2 hours 30 minutes',
     schedule: 'Morning and afternoon departures, every day from 8:00 AM to 6:00 PM.',
-    priceUnit: DOUBLE_BUGGY,
+    priceUnit: 'per person',
+    options: [
+      { id: 'buggy-2', label: 'Buggy for 2 people', unit: 'per buggy', seats: 2, priceUSD: 99 },
+      { id: 'buggy-4', label: 'Buggy for 4 people', unit: 'per buggy (US$44 per person)', seats: 4, priceUSD: 176 },
+    ],
     note: LOCAL_NOTE,
     includes: [
-      'Double 4x4 buggy',
+      '4x4 buggy for 2 or 4 people',
       'Protective helmet',
+      WEB_GOGGLES,
       'Drinking water',
       'Safety instructions and a quick driving briefing before departure',
       'Coffee, fresh fruit and water at the traditional house',
@@ -30,40 +33,20 @@ export const EXCURSIONS_EN: Record<string, Translated> = {
       'Stop at Teco Beach',
     ],
     bring: ["Clothes and shoes you don't mind getting dirty or wet", 'Swimsuit', 'Sunscreen', 'Towel', 'Cash if you want to buy food or souvenirs'],
-    highlights: ['Puddles, mud and dust', 'Rocky trails', 'Traditional Dominican house', 'Swim at Teco Beach'],
-  },
-  'buggy-costa-playa': {
-    name: 'Coast & Beach Buggy',
-    short: 'Sand, sea and cruise ship views.',
-    description:
-      'Ride the Puerto Plata coastline by buggy: sand, Atlantic breeze and views of the cruise ships arriving in the bay. A calmer route, perfect for couples and families.',
-    tags: ['Beach', 'Views', 'Coast'],
-    priceUnit: DOUBLE_BUGGY,
-    note: LOCAL_NOTE,
-    includes: ['Double 4x4 buggy', ...RIDE_INCLUDES, 'Beach stop'],
-    bring: [...BRING_DEFAULT, 'Swimsuit'],
-    highlights: ['Driving on the sand', 'Cruise ship views', 'Photo stop', 'Swim at the beach'],
+    highlights: ['Buggy for 2 or 4 people', 'Puddles, mud and rocky trails', 'Traditional Dominican house', 'Swim at Teco Beach'],
   },
   'four-wheel-4x4': {
     name: 'ATV 4x4',
-    short: 'Your own ATV through water and hills.',
+    short: 'The same route on your own ATV.',
     description:
-      'An ATV just for you. Climb mountain roads, cross the river and feel the speed on every turn. Perfect if you want to ride solo.',
-    tags: ['ATV', 'Water', 'Adrenaline'],
-    includes: ['ATV / quad', ...RIDE_INCLUDES],
-    bring: BRING_DEFAULT,
-    highlights: ['Single-rider ATV', 'River crossings', 'Mountain roads', 'Beach'],
-  },
-  'buggy-en-grupo': {
-    name: 'Group & Family Buggies',
-    short: 'Buggy convoy for friends and families.',
-    description:
-      'We organize buggy convoys for groups of friends, families, companies and celebrations. We plan the route around your group and the ages of the riders.',
-    tags: ['Groups', 'Family', 'Convoy'],
+      'The Maimón Guzmancito and Teco Beach route, but driving your own ATV: puddles, mud and rocky trails, a stop at the traditional Dominican house with coffee, fruit and Mamajuana, and time to enjoy Teco Beach. Perfect if you want to ride solo.',
+    tags: ['ATV', 'Mud', 'Teco Beach'],
+    duration: '2 hours 30 minutes',
+    schedule: 'Morning and afternoon departures, every day from 8:00 AM to 6:00 PM.',
     note: LOCAL_NOTE,
-    includes: ['Buggies for the group', ...RIDE_INCLUDES, 'Custom route'],
-    bring: BRING_DEFAULT,
-    highlights: ['US$44 per person', '2 and 4 seat buggies', 'Great for celebrations', 'Group photos'],
+    includes: ['Single-rider ATV / quad', 'Protective helmet', WEB_GOGGLES, 'Drinking water', 'Safety briefing before departure', 'Coffee, fruit and a Mamajuana shot at the traditional house', 'Stop at Teco Beach'],
+    bring: ["Clothes and shoes you don't mind getting dirty or wet", 'Swimsuit', 'Sunscreen', 'Towel'],
+    highlights: ['Single-rider ATV', 'Puddles, mud and rocky trails', 'Traditional Dominican house', 'Teco Beach'],
   },
   'party-boat': {
     name: 'Party Boat',

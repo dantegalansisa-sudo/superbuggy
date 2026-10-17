@@ -21,6 +21,16 @@
       "source": "/excursiones/buggy-rio-lodo",
       "destination": "/excursiones/buggy-maimon-playa-teco",
       "permanent": true
+    },
+    {
+      "source": "/excursiones/buggy-costa-playa",
+      "destination": "/excursiones/buggy-maimon-playa-teco",
+      "permanent": true
+    },
+    {
+      "source": "/excursiones/buggy-en-grupo",
+      "destination": "/excursiones/buggy-maimon-playa-teco",
+      "permanent": true
     }
   ]
 }

@@ -13,7 +13,11 @@ export function PriceTag({ ex, unit = false }: { ex: Excursion; unit?: boolean }
   return ex.priceUSD ? (
     <span className="price">
       <small>{t.tours.priceFrom}</small> US${ex.priceUSD}
-      {unit && <em className="price__unit">{ex.priceUnit ?? t.excursion.perPerson}</em>}
+      {unit && (
+        <em className="price__unit">
+          {ex.options?.length ? ex.options.map((o) => `${o.label}: US$${o.priceUSD}`).join(' · ') : ex.priceUnit ?? t.excursion.perPerson}
+        </em>
+      )}
     </span>
   ) : (
     <span className="price price--ask">{t.tours.priceAsk}</span>
@@ -66,7 +70,7 @@ export default function Tours() {
           text={t.tours.text}
           aside={<button className="btn btn--outline btn--sm" onClick={() => book()}>{t.nav.book} <ArrowRight size={16} /></button>}
         />
-        <motion.div className="tours" variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.15 }}>
+        <motion.div className={`tours${tours.length === 2 ? ' tours--2' : ''}`} variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.15 }}>
           {tours.map((tour) => <TourCard key={tour.slug} tour={tour} />)}
         </motion.div>
       </div>

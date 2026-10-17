@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Backpack, Banknote, Building2, Check, Clock, CreditCard, Lock, Minus, Plus, ShieldCheck, Sparkles, Sun } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Backpack, Banknote, Building2, Check, Clock, CreditCard, Lock, ShieldCheck, Sparkles, Sun } from 'lucide-react';
 import RevealText from '../components/RevealText';
 import MagneticButton from '../components/MagneticButton';
 import WhatsAppIcon from '../components/WhatsAppIcon';
@@ -9,6 +9,8 @@ import Booking from '../components/Booking';
 import SectionHead from '../components/SectionHead';
 import { PriceTag, TourCard } from '../components/Tours';
 import NotFound from './NotFound';
+import QtyPicker from '../components/QtyPicker';
+import { defaultCounts, fmt, priceLines, totalOf, type Counts } from '../content/pricing';
 import { useLang } from '../i18n';
 import { useBooking } from '../booking';
 import { useSeo } from '../hooks/useSeo';
@@ -48,7 +50,8 @@ export default function ExcursionPage() {
   const x = t.excursion;
   const { checkout: book } = useBooking();
   const { ref, y } = useParallax(60);
-  const [qty, setQty] = useState(2);
+  // Cantidades por tipo de vehículo / personas; se reinician al cambiar de excursión
+  const [picked, setPicked] = useState<{ slug?: string; counts: Counts }>({ counts: {} });
 
   useSeo({
     title: ex ? t.seo.excursionTitle(ex.name) : t.seo.notFoundTitle,
@@ -59,6 +62,10 @@ export default function ExcursionPage() {
   useJsonLd(ex);
 
   if (!ex) return <NotFound />;
+
+  const lines = priceLines(ex, t);
+  const counts = picked.slug === ex.slug ? picked.counts : defaultCounts(ex);
+  const total = totalOf(lines, counts);
 
   const others = all.filter((e) => e.slug !== ex.slug).sort((a, b) => Number(b.category === ex.category) - Number(a.category === ex.category)).slice(0, 3);
   const wa = waLink(x.waText(ex.name));
@@ -76,7 +83,7 @@ export default function ExcursionPage() {
           <RevealText tag="h1" className="xhero__title" animateOnMount delay={0.2}>{ex.name}</RevealText>
           <motion.p className="xhero__lead" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>{ex.short}</motion.p>
           <motion.div className="xhero__ctas" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.75 }}>
-            <MagneticButton className="btn btn--primary btn--lg" onClick={() => book({ tour: ex.slug, people: String(qty) })}>
+            <MagneticButton className="btn btn--primary btn--lg" onClick={() => book({ tour: ex.slug, counts })}>
               {x.book} <ArrowRight size={18} />
             </MagneticButton>
             <MagneticButton className="btn btn--wa btn--lg" href={wa} target="_blank">
@@ -141,18 +148,13 @@ export default function ExcursionPage() {
             <p className="xcard__row"><Clock size={18} /> {x.duration}: <strong>{ex.duration ?? x.durationAsk}</strong></p>
             {ex.schedule && <p className="xcard__row xcard__row--small"><Sun size={18} /> {ex.schedule}</p>}
             <div className="xcard__calc">
-              <span>{x.howMany}</span>
-              <div className="co__qty">
-                <button type="button" onClick={() => setQty((q) => Math.max(1, q - 1))} aria-label="-"><Minus size={16} /></button>
-                <strong>{qty}</strong>
-                <button type="button" onClick={() => setQty((q) => Math.min(30, q + 1))} aria-label="+"><Plus size={16} /></button>
-              </div>
-              <small>{ex.priceBasis === 'buggy' ? t.checkout.buggiesHint(qty) : `${qty} ${qty === 1 ? t.quick.person : t.quick.persons}`}</small>
+              <span>{ex.options?.length ? t.checkout.vehicles : x.howMany}</span>
+              <QtyPicker lines={lines} counts={counts} onChange={(c) => setPicked({ slug: ex.slug, counts: c })} />
             </div>
-            {ex.priceUSD && (
-              <p className="xcard__total"><span>{t.checkout.total}</span> US${(ex.priceUSD * qty).toLocaleString('en-US')}</p>
+            {total && (
+              <p className="xcard__total"><span>{t.checkout.total}</span> {fmt(total)}</p>
             )}
-            <button className="btn btn--primary btn--lg xcard__btn" onClick={() => book({ tour: ex.slug, people: String(qty) })}>
+            <button className="btn btn--primary btn--lg xcard__btn" onClick={() => book({ tour: ex.slug, counts })}>
               <Lock size={16} /> {x.book}
             </button>
             <div className="xcard__methods" aria-hidden="true">

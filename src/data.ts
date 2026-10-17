@@ -16,6 +16,8 @@ export type Excursion = {
   priceUSD?: number; // vacío = "Consultar precio"
   priceUnit?: string; // por defecto 'por persona'
   priceBasis?: 'person' | 'buggy'; // cómo se cuenta el total: por persona (defecto) o por buggy doble
+  // Tipos de vehículo con su precio (ej. buggy de 2 y de 4 personas). Si existen, el cliente elige cantidades de cada uno.
+  options?: { id: string; label: string; unit: string; seats: number; priceUSD: number }[];
   note?: string; // aviso destacado (ofertas, condiciones)
   includes: string[];
   bring: string[];
@@ -23,10 +25,8 @@ export type Excursion = {
   featured?: boolean;
 };
 
-const BRING_DEFAULT = ['Ropa que se pueda ensuciar o mojar', 'Protector solar', 'Muda de ropa', 'Calzado cerrado'];
-// Lo que incluyen todos los tours de buggy y four wheel (confirmado por el cliente)
-const RIDE_INCLUDES = ['Casco protector', 'Gafas', 'Botella de agua por persona', 'Trago de mamajuana', 'Guía local', 'Full insurance'];
-const LOCAL_NOTE = '¿Eres cliente local? Pregunta por nuestras ofertas para grupos y familias.';
+const LOCAL_NOTE = 'Reservando por la web te incluimos los lentes. ¿Eres cliente local? Pregunta por nuestras ofertas.';
+const WEB_GOGGLES = 'Lentes protectores (incluidos al reservar por la web)';
 
 export const EXCURSIONS: Excursion[] = [
   {
@@ -34,20 +34,24 @@ export const EXCURSIONS: Excursion[] = [
     name: 'Buggy Maimón Guzmancito & Playa Teco',
     category: 'buggy',
     image: '/images/buggy-18-agua.webp',
-    gallery: ['/images/buggy-18-agua.webp', '/images/buggy-rio.webp', '/images/buggies-rojos.webp', '/images/grupo-buggies.webp'],
+    gallery: ['/images/buggy-18-agua.webp', '/images/buggy-rio.webp', '/images/buggies-rojos.webp', '/images/buggy-naranja.webp', '/images/grupo-buggies.webp'],
     short: 'Charcos, lodo, caminos rocosos y Playa Teco.',
     description:
       'Nuestra aventura comienza en Maimón Guzmancito: conducirás por charcos de agua, lodo, polvo y caminos rocosos llenos de adrenalina. Haremos una parada en una casa tradicional dominicana con café, agua, frutas frescas y un shot de mamajuana (hay baño y puedes comprar accesorios locales). Luego seguimos hacia Playa Teco, con tiempo para bañarte, caminar, relajarte y, si quieres, comprar comida. Al final regresamos para concluir la excursión.',
     tags: ['Lodo', 'Casa típica', 'Playa Teco'],
     duration: '2 horas y 30 minutos',
     schedule: 'Salidas en la mañana y en la tarde, todos los días de 8:00 a. m. a 6:00 p. m.',
-    priceUSD: 99,
-    priceUnit: 'por buggy doble (2 personas)',
-    priceBasis: 'buggy',
+    priceUSD: 44,
+    priceUnit: 'por persona',
+    options: [
+      { id: 'buggy-2', label: 'Buggy para 2 personas', unit: 'por buggy', seats: 2, priceUSD: 99 },
+      { id: 'buggy-4', label: 'Buggy para 4 personas', unit: 'por buggy (US$44 por persona)', seats: 4, priceUSD: 176 },
+    ],
     note: LOCAL_NOTE,
     includes: [
-      'Buggy doble 4x4',
+      'Buggy 4x4 para 2 o 4 personas',
       'Casco protector',
+      WEB_GOGGLES,
       'Agua potable',
       'Instrucciones de seguridad y explicación de manejo antes de salir',
       'Café, frutas frescas y agua en la casa tradicional',
@@ -55,26 +59,8 @@ export const EXCURSIONS: Excursion[] = [
       'Parada en Playa Teco',
     ],
     bring: ['Ropa y calzado que no te importe ensuciar o mojar', 'Traje de baño', 'Protector solar', 'Toalla', 'Dinero si quieres comprar comida o accesorios'],
-    highlights: ['Charcos, lodo y polvo', 'Caminos rocosos', 'Casa tradicional dominicana', 'Baño en Playa Teco'],
+    highlights: ['Buggy para 2 o 4 personas', 'Charcos, lodo y caminos rocosos', 'Casa tradicional dominicana', 'Baño en Playa Teco'],
     featured: true,
-  },
-  {
-    slug: 'buggy-costa-playa',
-    name: 'Buggy Costa & Playa',
-    category: 'buggy',
-    image: '/images/buggy-playa.webp',
-    gallery: ['/images/buggy-playa.webp', '/images/buggy-crucero.webp', '/images/buggy-crucero-2.webp'],
-    short: 'Arena, mar y vista a los cruceros.',
-    description:
-      'Recorre la costa de Puerto Plata en buggy: arena, brisa del Atlántico y vistas a los cruceros que llegan a la bahía. Una ruta más tranquila, ideal para parejas y familias.',
-    tags: ['Playa', 'Vistas', 'Costa'],
-    priceUSD: 99,
-    priceUnit: 'por buggy doble (2 personas)',
-    priceBasis: 'buggy',
-    note: LOCAL_NOTE,
-    includes: ['Buggy doble 4x4', ...RIDE_INCLUDES, 'Parada en la playa'],
-    bring: [...BRING_DEFAULT, 'Traje de baño'],
-    highlights: ['Manejo en la arena', 'Vista a los cruceros', 'Parada para fotos', 'Baño en la playa'],
   },
   {
     slug: 'four-wheel-4x4',
@@ -82,30 +68,17 @@ export const EXCURSIONS: Excursion[] = [
     category: 'buggy',
     image: '/images/atv-rio.webp',
     gallery: ['/images/atv-rio.webp', '/images/atv-luces.webp', '/images/atv-playa.webp'],
-    short: 'Tu propio ATV por agua y montaña.',
+    short: 'El mismo recorrido en tu propio ATV.',
     description:
-      'Un four wheel solo para ti. Sube por caminos de montaña, cruza el río y siente la velocidad en cada curva. Perfecto para quien quiere manejar en solitario.',
-    tags: ['ATV', 'Agua', 'Adrenalina'],
+      'El recorrido de Maimón Guzmancito y Playa Teco, pero manejando tu propio four wheel: charcos, lodo y caminos rocosos, parada en la casa tradicional dominicana con café, frutas y mamajuana, y tiempo para disfrutar Playa Teco. Ideal si quieres manejar solo.',
+    tags: ['ATV', 'Lodo', 'Playa Teco'],
+    duration: '2 horas y 30 minutos',
+    schedule: 'Salidas en la mañana y en la tarde, todos los días de 8:00 a. m. a 6:00 p. m.',
     priceUSD: 69,
-    includes: ['Four wheel (ATV / quad)', ...RIDE_INCLUDES],
-    bring: BRING_DEFAULT,
-    highlights: ['ATV individual', 'Cruce de ríos', 'Caminos de montaña', 'Playa'],
-  },
-  {
-    slug: 'buggy-en-grupo',
-    name: 'Buggy en Grupo & Familia',
-    category: 'buggy',
-    image: '/images/buggies-rojos.webp',
-    gallery: ['/images/buggies-rojos.webp', '/images/buggy-naranja.webp', '/images/grupo-buggies.webp', '/images/buggy-polvo.webp'],
-    short: 'Caravana para amigos y familias.',
-    description:
-      'Organizamos caravanas de buggies para grupos de amigos, familias, empresas y celebraciones. Armamos la ruta según el grupo y la edad de los participantes.',
-    tags: ['Grupos', 'Familia', 'Caravana'],
-    priceUSD: 44,
     note: LOCAL_NOTE,
-    includes: ['Buggies para el grupo', ...RIDE_INCLUDES, 'Ruta a la medida'],
-    bring: BRING_DEFAULT,
-    highlights: ['US$44 por persona', 'Buggies de 2 y 4 plazas', 'Ideal para celebraciones', 'Fotos del grupo'],
+    includes: ['Four wheel (ATV / quad) individual', 'Casco protector', WEB_GOGGLES, 'Agua potable', 'Instrucciones de seguridad antes de salir', 'Café, frutas y shot de mamajuana en la casa tradicional', 'Parada en Playa Teco'],
+    bring: ['Ropa y calzado que no te importe ensuciar o mojar', 'Traje de baño', 'Protector solar', 'Toalla'],
+    highlights: ['ATV individual', 'Charcos, lodo y caminos rocosos', 'Casa tradicional dominicana', 'Playa Teco'],
   },
   {
     slug: 'party-boat',

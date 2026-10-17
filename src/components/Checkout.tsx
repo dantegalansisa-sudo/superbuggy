@@ -1,19 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Banknote, Building2, CalendarDays, CheckCircle2, Clock, Copy, CreditCard, Lock, Minus, Plus, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Banknote, Building2, CalendarDays, CheckCircle2, Clock, Copy, CreditCard, Lock, ShieldCheck } from 'lucide-react';
 import WhatsAppIcon from './WhatsAppIcon';
 import { useToast } from './Toast';
+import QtyPicker from './QtyPicker';
 import { useLang } from '../i18n';
 import { useCatalog } from '../content/catalog';
 import { CONFIG, PAYMENTS, paypalLink, waLink } from '../config';
 import { EXCURSIONS } from '../data';
 import type { Prefill } from '../booking';
+import { countsLabel, defaultCounts, fmt, priceLines, totalOf, type Counts } from '../content/pricing';
 
 type Method = 'paypal' | 'bank' | 'cash';
 
 const today = () => new Date().toISOString().slice(0, 10);
-const fmt = (n: number) => `US$${n.toLocaleString('en-US')}`;
 // Código corto para identificar la reserva en el pago y en WhatsApp
 const newCode = () => 'SB-' + Math.random().toString(36).slice(2, 7).toUpperCase();
 
@@ -29,7 +30,7 @@ export default function Checkout({ prefill, onClose }: { prefill?: Prefill; onCl
   const [step, setStep] = useState(1);
   const [slug, setSlug] = useState(() => resolve(prefill?.tour));
   const [date, setDate] = useState(prefill?.date ?? '');
-  const [qty, setQty] = useState(() => Math.max(1, parseInt(prefill?.people ?? '2', 10) || 2));
+  const [counts, setCounts] = useState<Counts>(() => prefill?.counts ?? defaultCounts(all.find((e) => e.slug === resolve(prefill?.tour)), prefill?.people));
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -47,19 +48,25 @@ export default function Checkout({ prefill, onClose }: { prefill?: Prefill; onCl
     setStep(1);
     setDone(false);
     setHint('');
-    if (prefill.tour) setSlug(resolve(prefill.tour));
+    const s = prefill.tour ? resolve(prefill.tour) : slug;
+    if (prefill.tour) setSlug(s);
     if (prefill.date) setDate(prefill.date);
-    if (prefill.people) setQty(Math.max(1, parseInt(prefill.people, 10) || 1));
+    setCounts(prefill.counts ?? defaultCounts(all.find((e) => e.slug === s), prefill.people));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prefill?.nonce]);
 
   const ex = all.find((e) => e.slug === slug);
-  const byBuggy = ex?.priceBasis === 'buggy';
-  const total = ex?.priceUSD ? ex.priceUSD * qty : undefined;
+  const lines = priceLines(ex, t);
+  const total = totalOf(lines, counts);
   const pct = PAYMENTS.depositPercent;
   const payAmount = total ? (mode === 'deposit' ? Math.ceil((total * pct) / 100) : total) : undefined;
   const amountLabel = payAmount ? fmt(payAmount) : '';
-  const qtyLabel = byBuggy ? c.buggiesHint(qty) : `${qty} ${qty === 1 ? t.quick.person : t.quick.persons}`;
+  const qtyLabel = countsLabel(lines, counts, t);
+  // Al cambiar de excursión se reinician las cantidades
+  const pickTour = (s: string) => {
+    setSlug(s);
+    setCounts(defaultCounts(all.find((e) => e.slug === s)));
+  };
 
   const waMessage = (via: string) => {
     const w = c.wa;
@@ -178,35 +185,32 @@ export default function Checkout({ prefill, onClose }: { prefill?: Prefill; onCl
           <motion.div key="s1" className="co__step" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }}>
             <label className="co__field">
               <span>{c.excursion}</span>
-              <select value={slug} onChange={(e) => setSlug(e.target.value)}>
+              <select value={slug} onChange={(e) => pickTour(e.target.value)}>
                 <option value="">{c.choose}</option>
                 {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
             </label>
-            <div className="co__row">
-              <label className="co__field">
-                <span><CalendarDays size={14} /> {c.date}</span>
-                <input type="date" min={today()} value={date} onChange={(e) => setDate(e.target.value)} />
-              </label>
+            <label className="co__field">
+              <span><CalendarDays size={14} /> {c.date}</span>
+              <input type="date" min={today()} value={date} onChange={(e) => setDate(e.target.value)} />
+            </label>
+            {ex && (
               <div className="co__field">
-                <span>{byBuggy ? c.buggies : c.people}</span>
-                <div className="co__qty">
-                  <button type="button" onClick={() => setQty((q) => Math.max(1, q - 1))} aria-label="-"><Minus size={16} /></button>
-                  <strong>{qty}</strong>
-                  <button type="button" onClick={() => setQty((q) => Math.min(30, q + 1))} aria-label="+"><Plus size={16} /></button>
-                </div>
-                {byBuggy && <small className="co__hint">{c.buggiesHint(qty)}</small>}
+                <span>{ex.options?.length ? c.vehicles : c.people}</span>
+                <QtyPicker lines={lines} counts={counts} onChange={setCounts} />
               </div>
-            </div>
+            )}
 
             <div className="co__total">
-              {ex?.priceUSD ? (
+              {total ? (
                 <>
                   <div>
-                    <small>{fmt(ex.priceUSD)} {byBuggy ? c.unitBuggy : c.unitPerson} × {qty}</small>
-                    {ex.duration && <small><Clock size={12} /> {ex.duration}</small>}
+                    {lines.filter((l) => counts[l.id]).map((l) => (
+                      <small key={l.id}>{counts[l.id]} × {l.label} · {fmt(l.price! * counts[l.id])}</small>
+                    ))}
+                    {ex?.duration && <small><Clock size={12} /> {ex.duration}</small>}
                   </div>
-                  <p><span>{c.total}</span> {fmt(total!)}</p>
+                  <p><span>{c.total}</span> {fmt(total)}</p>
                 </>
               ) : (
                 <p className="co__ask">{ex ? c.priceAsk : c.choose}</p>

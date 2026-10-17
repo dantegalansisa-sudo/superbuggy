@@ -172,3 +172,8 @@
 
 .xcard__price { flex-wrap: wrap; }
 .xcard__price > small { flex-basis: 100%; margin-top: -4px; }
+
+/* Solo dos tours: tarjetas anchas */
+.tours--2 { grid-template-columns: repeat(2, 1fr); }
+.tours--2 .tour__img { aspect-ratio: 16 / 10; }
+@media (max-width: 600px) { .tours--2 { grid-template-columns: none; } .tours--2 .tour__img { aspect-ratio: 4 / 3; } }
