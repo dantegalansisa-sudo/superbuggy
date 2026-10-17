@@ -58,7 +58,7 @@ export default function Navbar() {
           <button className="btn btn--primary btn--sm nav__cta" onClick={() => book()}>
             {t.nav.book} <ArrowRight size={16} />
           </button>
-          <button className="nav__burger" onClick={() => setOpen(true)} aria-label="Abrir menú">
+          <button className="nav__burger" onClick={() => setOpen(true)} aria-label={t.nav.openMenu}>
             <Menu size={24} />
           </button>
         </div>
@@ -75,7 +75,7 @@ export default function Navbar() {
           >
             <div className="menu__top container">
               <Logo light />
-              <button className="nav__burger nav__burger--light" onClick={() => setOpen(false)} aria-label="Cerrar menú">
+              <button className="nav__burger nav__burger--light" onClick={() => setOpen(false)} aria-label={t.nav.closeMenu}>
                 <X size={26} />
               </button>
             </div>

@@ -9,7 +9,8 @@ import { useLang } from '../i18n';
 import { useBooking } from '../booking';
 import { useParallax } from '../hooks/useParallax';
 import { CONFIG, waLink } from '../config';
-import { EXCURSIONS, excursionPath } from '../data';
+import { excursionPath } from '../data';
+import { useCatalog } from '../content/catalog';
 
 // Banda corta de llamada a la acción entre secciones
 export function CtaBand() {
@@ -40,6 +41,7 @@ export function CtaBand() {
 export function Footer() {
   const { t } = useLang();
   const f = t.footer;
+  const { all } = useCatalog();
   return (
     <footer className="footer">
       <div className="container footer__grid">
@@ -53,7 +55,7 @@ export function Footer() {
         <div>
           <h4>{f.adventures}</h4>
           <ul>
-            {EXCURSIONS.map((x) => (
+            {all.map((x) => (
               <li key={x.slug}><Link to={excursionPath(x.slug)}>{x.name}</Link></li>
             ))}
           </ul>

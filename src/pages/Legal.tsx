@@ -6,11 +6,12 @@ import { useLang } from '../i18n';
 import { useBooking } from '../booking';
 import { useSeo } from '../hooks/useSeo';
 import { PRIVACY, TERMS } from '../content/legal';
+import { PRIVACY_EN, TERMS_EN } from '../content/legal.en';
 import { CONFIG, waLink } from '../config';
 
 export default function LegalPage({ doc }: { doc: 'privacy' | 'terms' }) {
-  const d = doc === 'privacy' ? PRIVACY : TERMS;
-  const { t } = useLang();
+  const { t, lang } = useLang();
+  const d = lang === 'en' ? (doc === 'privacy' ? PRIVACY_EN : TERMS_EN) : doc === 'privacy' ? PRIVACY : TERMS;
   const { book } = useBooking();
   useSeo({
     title: `${d.title} · ${CONFIG.brand}`,

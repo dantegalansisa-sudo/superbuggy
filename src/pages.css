@@ -158,3 +158,11 @@
 }
 
 .pay__note { font-size: 0.84rem; padding: 10px 14px; border-radius: 12px; background: var(--cream); border: 1px dashed var(--sand-2); }
+
+/* Precios reales */
+.price__unit { display: block; font-family: var(--f-body); font-style: normal; font-size: 0.72rem; font-weight: 600; color: var(--muted); }
+.tour__meta { align-items: flex-end; }
+.xcard__pay { display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid var(--line); }
+.xcard__pay .btn { width: 100%; }
+.xcard__pay small { font-size: 0.78rem; color: var(--muted); text-align: center; }
+.xnote { margin-top: 18px; padding: 14px 18px; border-radius: 14px; background: var(--orange-soft); color: var(--orange-2); font-weight: 700; }

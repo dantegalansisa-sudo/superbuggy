@@ -18,8 +18,9 @@ npm run build   # also generates sitemap.xml and robots.txt
 | PayPal.me user and bank accounts | `src/config.ts` (`PAYMENTS`) |
 | Excursions: name, photos, description, includes, duration, price | `src/data.ts` (`EXCURSIONS`) |
 | Hero carousel photos | `src/data.ts` (`HERO_SLIDES`) |
-| Site copy (Spanish) | `src/i18n/es.ts` |
-| Privacy policy and terms | `src/content/legal.ts` |
+| Site copy (Spanish / English) | `src/i18n/es.ts` / `src/i18n/en.ts` |
+| Excursion text in English | `src/content/excursions.en.ts` |
+| Privacy policy and terms (ES / EN) | `src/content/legal.ts` / `src/content/legal.en.ts` |
 
 ## Pages
 
@@ -29,6 +30,10 @@ npm run build   # also generates sitemap.xml and robots.txt
 - `/terminos` and `/privacidad`: legal pages
 
 To add an excursion, append an object to `EXCURSIONS`. Its page, the booking selector, the footer and the sitemap update automatically. Leave `priceUSD` empty to show "Consultar precio".
+
+## Languages
+
+The site is fully bilingual (ES/EN switch in the menu). The first visit uses the browser language (Spanish if the browser is in Spanish, English otherwise) and the visitor's choice is remembered. Prices, photos and durations live only in `data.ts`; the English files hold just the text.
 
 ## Bookings and payments
 

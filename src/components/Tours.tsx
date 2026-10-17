@@ -4,13 +4,17 @@ import { ArrowRight, Clock, Flame } from 'lucide-react';
 import SectionHead from './SectionHead';
 import { useLang } from '../i18n';
 import { useBooking } from '../booking';
-import { TOURS, excursionPath, type Excursion } from '../data';
+import { excursionPath, type Excursion } from '../data';
+import { useCatalog } from '../content/catalog';
 import { cardVariants, containerVariants } from '../utils/easings';
 
-export function PriceTag({ ex }: { ex: Excursion }) {
+export function PriceTag({ ex, unit = false }: { ex: Excursion; unit?: boolean }) {
   const { t } = useLang();
   return ex.priceUSD ? (
-    <span className="price"><small>{t.tours.priceFrom}</small> US${ex.priceUSD}</span>
+    <span className="price">
+      <small>{t.tours.priceFrom}</small> US${ex.priceUSD}
+      {unit && <em className="price__unit">{ex.priceUnit ?? t.excursion.perPerson}</em>}
+    </span>
   ) : (
     <span className="price price--ask">{t.tours.priceAsk}</span>
   );
@@ -32,7 +36,7 @@ export function TourCard({ tour }: { tour: Excursion }) {
         </ul>
         <p>{tour.short}</p>
         <div className="tour__meta">
-          <PriceTag ex={tour} />
+          <PriceTag ex={tour} unit />
           {tour.duration && <span><Clock size={14} /> {tour.duration}</span>}
         </div>
         <div className="tour__actions">
@@ -51,6 +55,7 @@ export function TourCard({ tour }: { tour: Excursion }) {
 export default function Tours() {
   const { t } = useLang();
   const { book } = useBooking();
+  const { tours } = useCatalog();
   return (
     <section className="section" id="tours">
       <div className="container">
@@ -62,7 +67,7 @@ export default function Tours() {
           aside={<button className="btn btn--outline btn--sm" onClick={() => book()}>{t.nav.book} <ArrowRight size={16} /></button>}
         />
         <motion.div className="tours" variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.15 }}>
-          {TOURS.map((tour) => <TourCard key={tour.slug} tour={tour} />)}
+          {tours.map((tour) => <TourCard key={tour.slug} tour={tour} />)}
         </motion.div>
       </div>
     </section>

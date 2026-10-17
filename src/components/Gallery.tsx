@@ -3,10 +3,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import SectionHead from './SectionHead';
 import { useLang } from '../i18n';
-import { GALLERY } from '../data';
+import { useCatalog } from '../content/catalog';
 
 export default function Gallery() {
   const { t } = useLang();
+  const { gallery: GALLERY } = useCatalog();
   const [idx, setIdx] = useState<number | null>(null);
   const go = (d: number) => setIdx((i) => (i === null ? i : (i + d + GALLERY.length) % GALLERY.length));
 
@@ -46,8 +47,8 @@ export default function Gallery() {
       <AnimatePresence>
         {idx !== null && (
           <motion.div className="lightbox" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIdx(null)} role="dialog" aria-modal="true">
-            <button className="lightbox__close" aria-label="Cerrar"><X size={28} /></button>
-            <button className="lightbox__nav lightbox__nav--prev" onClick={(e) => { e.stopPropagation(); go(-1); }} aria-label="Anterior"><ChevronLeft size={30} /></button>
+            <button className="lightbox__close" aria-label={t.ui.close}><X size={28} /></button>
+            <button className="lightbox__nav lightbox__nav--prev" onClick={(e) => { e.stopPropagation(); go(-1); }} aria-label={t.ui.prev}><ChevronLeft size={30} /></button>
             <motion.img
               key={idx}
               src={GALLERY[idx].src}
@@ -57,7 +58,7 @@ export default function Gallery() {
               transition={{ duration: 0.35 }}
               onClick={(e) => e.stopPropagation()}
             />
-            <button className="lightbox__nav lightbox__nav--next" onClick={(e) => { e.stopPropagation(); go(1); }} aria-label="Siguiente"><ChevronRight size={30} /></button>
+            <button className="lightbox__nav lightbox__nav--next" onClick={(e) => { e.stopPropagation(); go(1); }} aria-label={t.ui.next}><ChevronRight size={30} /></button>
           </motion.div>
         )}
       </AnimatePresence>

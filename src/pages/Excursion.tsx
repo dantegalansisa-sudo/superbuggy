@@ -14,8 +14,9 @@ import { useLang } from '../i18n';
 import { useBooking } from '../booking';
 import { useSeo } from '../hooks/useSeo';
 import { useParallax } from '../hooks/useParallax';
-import { EXCURSIONS, excursionPath, findExcursion, type Excursion } from '../data';
-import { CONFIG, waLink } from '../config';
+import { excursionPath, type Excursion } from '../data';
+import { useCatalog } from '../content/catalog';
+import { CONFIG, paypalLink, waLink } from '../config';
 import { cardVariants, containerVariants, EASINGS } from '../utils/easings';
 
 // Datos estructurados para Google (TouristTrip)
@@ -42,14 +43,15 @@ function useJsonLd(ex: Excursion | undefined) {
 
 export default function ExcursionPage() {
   const { slug } = useParams();
-  const ex = findExcursion(slug);
+  const { all, find } = useCatalog();
+  const ex = find(slug);
   const { t } = useLang();
   const x = t.excursion;
   const { book } = useBooking();
   const { ref, y } = useParallax(60);
 
   useSeo({
-    title: ex ? `${ex.name} en Puerto Plata · Super Buggies` : 'Excursión no encontrada · Super Buggies',
+    title: ex ? t.seo.excursionTitle(ex.name) : t.seo.notFoundTitle,
     description: ex ? `${ex.description.slice(0, 150)}…` : x.notFound,
     path: ex ? excursionPath(ex.slug) : '/404',
     image: ex?.image,
@@ -58,7 +60,7 @@ export default function ExcursionPage() {
 
   if (!ex) return <NotFound />;
 
-  const others = EXCURSIONS.filter((e) => e.slug !== ex.slug).sort((a, b) => Number(b.category === ex.category) - Number(a.category === ex.category)).slice(0, 3);
+  const others = all.filter((e) => e.slug !== ex.slug).sort((a, b) => Number(b.category === ex.category) - Number(a.category === ex.category)).slice(0, 3);
   const wa = waLink(x.waText(ex.name));
 
   return (
@@ -90,6 +92,7 @@ export default function ExcursionPage() {
             <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, ease: EASINGS.smooth }}>
               <p className="eyebrow">{x.about}</p>
               <p className="xbody__desc">{ex.description}</p>
+              {ex.note && <p className="xnote">{ex.note}</p>}
             </motion.div>
 
             <h2 className="xbody__h"><Sparkles size={20} /> {x.highlights}</h2>
@@ -133,7 +136,7 @@ export default function ExcursionPage() {
           <aside className="xcard">
             <div className="xcard__price">
               <PriceTag ex={ex} />
-              {ex.priceUSD && <small>{x.perPerson}</small>}
+              {ex.priceUSD && <small>{ex.priceUnit ?? x.perPerson}</small>}
             </div>
             <p className="xcard__row"><Clock size={18} /> {x.duration}: <strong>{ex.duration ?? x.durationAsk}</strong></p>
             <button className="btn btn--primary btn--lg xcard__btn" onClick={() => book({ tour: ex.name })}>
@@ -142,6 +145,12 @@ export default function ExcursionPage() {
             <a className="btn btn--wa btn--lg xcard__btn" href={wa} target="_blank" rel="noopener noreferrer">
               <WhatsAppIcon size={18} /> {x.wa}
             </a>
+            {ex.priceUSD && paypalLink(ex.priceUSD) && (
+              <div className="xcard__pay">
+                <a className="btn btn--paypal btn--sm" href={paypalLink(ex.priceUSD)} target="_blank" rel="noopener noreferrer">{x.payNow(ex.priceUSD)}</a>
+                <small>{x.payHint}</small>
+              </div>
+            )}
             <ul className="xcard__trust">
               {x.trust.map((tr) => <li key={tr}><ShieldCheck size={16} /> {tr}</li>)}
             </ul>

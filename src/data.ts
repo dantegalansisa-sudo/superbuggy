@@ -12,14 +12,19 @@ export type Excursion = {
   description: string; // párrafo de la página de detalle
   tags: string[];
   duration?: string; // ej. '3 horas'
-  priceUSD?: number; // precio por persona; vacío = "Consultar precio"
+  priceUSD?: number; // vacío = "Consultar precio"
+  priceUnit?: string; // por defecto 'por persona'
+  note?: string; // aviso destacado (ofertas, condiciones)
   includes: string[];
   bring: string[];
   highlights: string[];
   featured?: boolean;
 };
 
-const BRING_DEFAULT = ['Ropa que se pueda ensuciar o mojar', 'Gafas de sol', 'Protector solar', 'Muda de ropa'];
+const BRING_DEFAULT = ['Ropa que se pueda ensuciar o mojar', 'Protector solar', 'Muda de ropa', 'Calzado cerrado'];
+// Lo que incluyen todos los tours de buggy y four wheel (confirmado por el cliente)
+const RIDE_INCLUDES = ['Casco protector', 'Gafas', 'Botella de agua por persona', 'Trago de mamajuana', 'Guía local', 'Full insurance'];
+const LOCAL_NOTE = '¿Eres cliente local? Pregunta por nuestras ofertas para grupos y familias.';
 
 export const EXCURSIONS: Excursion[] = [
   {
@@ -32,7 +37,10 @@ export const EXCURSIONS: Excursion[] = [
     description:
       'El tour más buscado: maneja tu propio buggy por caminos rurales de Puerto Plata, cruza ríos y atraviesa charcos de lodo con un guía local acompañando al grupo. Pura adrenalina y paisajes de campo dominicano.',
     tags: ['Río', 'Lodo', 'Senderos'],
-    includes: ['Buggy 4x4', 'Casco y gafas', 'Guía local', 'Full insurance', 'Agua'],
+    priceUSD: 99,
+    priceUnit: 'por buggy doble (2 personas)',
+    note: LOCAL_NOTE,
+    includes: ['Buggy doble 4x4', ...RIDE_INCLUDES],
     bring: BRING_DEFAULT,
     highlights: ['Cruce de ríos', 'Caminos de lodo', 'Paisajes rurales', 'Fotos en ruta'],
     featured: true,
@@ -47,7 +55,10 @@ export const EXCURSIONS: Excursion[] = [
     description:
       'Recorre la costa de Puerto Plata en buggy: arena, brisa del Atlántico y vistas a los cruceros que llegan a la bahía. Una ruta más tranquila, ideal para parejas y familias.',
     tags: ['Playa', 'Vistas', 'Costa'],
-    includes: ['Buggy 4x4', 'Casco y gafas', 'Guía local', 'Full insurance', 'Parada en la playa'],
+    priceUSD: 99,
+    priceUnit: 'por buggy doble (2 personas)',
+    note: LOCAL_NOTE,
+    includes: ['Buggy doble 4x4', ...RIDE_INCLUDES, 'Parada en la playa'],
     bring: [...BRING_DEFAULT, 'Traje de baño'],
     highlights: ['Manejo en la arena', 'Vista a los cruceros', 'Parada para fotos', 'Baño en la playa'],
   },
@@ -61,13 +72,14 @@ export const EXCURSIONS: Excursion[] = [
     description:
       'Un four wheel solo para ti. Sube por caminos de montaña, cruza el río y siente la velocidad en cada curva. Perfecto para quien quiere manejar en solitario.',
     tags: ['ATV', 'Agua', 'Adrenalina'],
-    includes: ['Four wheel 4x4', 'Casco', 'Guía local', 'Full insurance', 'Agua'],
+    priceUSD: 69,
+    includes: ['Four wheel (ATV / quad)', ...RIDE_INCLUDES],
     bring: BRING_DEFAULT,
     highlights: ['ATV individual', 'Cruce de ríos', 'Caminos de montaña', 'Playa'],
   },
   {
     slug: 'buggy-en-grupo',
-    name: 'Buggy en Grupo',
+    name: 'Buggy en Grupo & Familia',
     category: 'buggy',
     image: '/images/buggies-rojos.webp',
     gallery: ['/images/buggies-rojos.webp', '/images/buggy-naranja.webp', '/images/grupo-buggies.webp', '/images/buggy-polvo.webp'],
@@ -75,23 +87,27 @@ export const EXCURSIONS: Excursion[] = [
     description:
       'Organizamos caravanas de buggies para grupos de amigos, familias, empresas y celebraciones. Armamos la ruta según el grupo y la edad de los participantes.',
     tags: ['Grupos', 'Familia', 'Caravana'],
-    includes: ['Buggies para el grupo', 'Cascos y gafas', 'Guías locales', 'Full insurance', 'Ruta a la medida'],
+    priceUSD: 44,
+    note: LOCAL_NOTE,
+    includes: ['Buggies para el grupo', ...RIDE_INCLUDES, 'Ruta a la medida'],
     bring: BRING_DEFAULT,
-    highlights: ['Precio especial por grupo', 'Buggies de 2 y 4 plazas', 'Ideal para celebraciones', 'Fotos del grupo'],
+    highlights: ['US$44 por persona', 'Buggies de 2 y 4 plazas', 'Ideal para celebraciones', 'Fotos del grupo'],
   },
   {
-    slug: 'catamaran-fiesta',
-    name: 'Catamarán & fiesta en el mar',
+    slug: 'party-boat',
+    name: 'Party boat: fiesta en el mar',
     category: 'aventura',
     image: '/images/catamaran.webp',
     gallery: ['/images/catamaran.webp', '/images/catamaran-piscina.webp', '/images/barco-fiesta.webp', '/images/barco-tobogan.webp', '/images/barco-amigos.webp'],
-    short: 'Mar turquesa, música y snorkel.',
+    short: '4 horas con BBQ y barra libre.',
     description:
-      'Navega la costa de Puerto Plata en catamarán con música, bebidas y paradas para nadar en aguas turquesa. El plan perfecto para celebrar o descansar después del buggy.',
-    tags: ['Mar', 'Fiesta', 'Snorkel'],
-    includes: ['Paseo en catamarán', 'Música a bordo', 'Paradas para nadar', 'Tripulación'],
+      'Cuatro horas navegando la costa de Puerto Plata con música, BBQ y barra libre, y paradas para nadar en aguas turquesa. El plan perfecto para celebrar con amigos o cerrar tus vacaciones.',
+    tags: ['Mar', 'BBQ', 'Open bar'],
+    duration: '4 horas',
+    priceUSD: 99,
+    includes: ['Paseo en barco de 4 horas', 'BBQ', 'Barra libre (open bar)', 'Música a bordo', 'Paradas para nadar', 'Tripulación'],
     bring: ['Traje de baño', 'Toalla', 'Protector solar', 'Gafas de sol'],
-    highlights: ['Aguas turquesa', 'Tobogán al mar', 'Ambiente de fiesta', 'Ideal para grupos'],
+    highlights: ['BBQ a bordo', 'Barra libre', 'Tobogán al mar', 'Ambiente de fiesta'],
   },
   {
     slug: 'cascadas-toboganes',
@@ -99,13 +115,30 @@ export const EXCURSIONS: Excursion[] = [
     category: 'aventura',
     image: '/images/cascada-tobogan.webp',
     gallery: ['/images/cascada-tobogan.webp', '/images/cascada-grupo.webp', '/images/cascada-salto.webp'],
-    short: 'Saltos y toboganes de roca natural.',
+    short: 'Medio día con almuerzo y transporte.',
     description:
       'Sube por el río entre cascadas y lánzate por toboganes naturales de roca. Una experiencia refrescante en plena selva, con chaleco y casco y guías que conocen cada salto.',
     tags: ['Cascadas', 'Saltos', 'Naturaleza'],
-    includes: ['Chaleco salvavidas', 'Casco', 'Guía local', 'Transporte a la entrada'],
+    duration: 'Medio día',
+    priceUSD: 59,
+    includes: ['Recogida y regreso al puerto o tu hotel', 'Entrada al parque', 'Almuerzo', 'Bebidas', 'Chaleco y casco', 'Guía local'],
     bring: ['Traje de baño', 'Calzado para agua', 'Muda de ropa', 'Toalla'],
     highlights: ['Toboganes naturales', 'Saltos al agua', 'Senderos en la selva', 'Fotos en las cascadas'],
+  },
+  {
+    slug: 'pesca-de-altura',
+    name: 'Pesca de altura',
+    category: 'aventura',
+    image: '/images/barco-proa.webp',
+    gallery: ['/images/barco-proa.webp', '/images/barco-amigos.webp', '/images/catamaran-2.webp'],
+    short: 'Mar abierto con snacks y bebidas.',
+    description:
+      'Sal a mar abierto frente a la costa de Puerto Plata a pescar con tripulación local. Snacks y bebidas a bordo para disfrutar la jornada, tengas o no experiencia pescando.',
+    tags: ['Pesca', 'Mar abierto', 'Bebidas'],
+    priceUSD: 99,
+    includes: ['Salida en bote de pesca', 'Equipo de pesca', 'Snacks', 'Cerveza y refrescos', 'Cuba libre', 'Tripulación'],
+    bring: ['Protector solar', 'Gorra', 'Gafas de sol', 'Pastilla para el mareo si la necesitas'],
+    highlights: ['Mar abierto', 'Apto para principiantes', 'Bebidas a bordo', 'Ideal para grupos'],
   },
   {
     slug: 'cabalgata',

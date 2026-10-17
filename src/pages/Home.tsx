@@ -7,13 +7,11 @@ import Booking from '../components/Booking';
 import { CtaBand } from '../components/Closing';
 import PaymentStrip from '../components/PaymentStrip';
 import { useSeo } from '../hooks/useSeo';
+import { useLang } from '../i18n';
 
 export default function Home() {
-  useSeo({
-    title: 'Super Buggies · Tours en buggy y excursiones en Puerto Plata',
-    description: 'Tours en buggy, four wheel, catamarán, cascadas y más excursiones en Puerto Plata, República Dominicana. Reserva en línea o por WhatsApp al 809-841-4125.',
-    path: '/',
-  });
+  const { t } = useLang();
+  useSeo({ title: t.seo.homeTitle, description: t.seo.homeDesc, path: '/' });
   return (
     <>
       <Hero />

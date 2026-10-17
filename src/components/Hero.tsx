@@ -7,7 +7,8 @@ import MagneticButton from './MagneticButton';
 import AnimatedCounter from './AnimatedCounter';
 import { useLang } from '../i18n';
 import { useBooking } from '../booking';
-import { BOOKING_OPTIONS, HERO_SLIDES, excursionPath } from '../data';
+import { excursionPath } from '../data';
+import { useCatalog } from '../content/catalog';
 import { EASINGS } from '../utils/easings';
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -27,6 +28,7 @@ export default function Hero() {
   const [date, setDate] = useState('');
   const [people, setPeople] = useState('2');
   const [slide, setSlide] = useState(0);
+  const { bookingOptions: BOOKING_OPTIONS, heroSlides: HERO_SLIDES } = useCatalog();
 
   // Carrusel automático; se reinicia el temporizador si el usuario elige una foto
   useEffect(() => {
@@ -42,7 +44,7 @@ export default function Hero() {
   const cards = [
     { src: '/images/playa-grupo.webp', label: t.hero.cards[0], rot: -6, slug: 'playas' },
     { src: '/images/cascada-tobogan.webp', label: t.hero.cards[1], rot: 3, slug: 'cascadas-toboganes' },
-    { src: '/images/catamaran.webp', label: t.hero.cards[2], rot: -2, slug: 'catamaran-fiesta' },
+    { src: '/images/catamaran.webp', label: t.hero.cards[2], rot: -2, slug: 'party-boat' },
   ];
   const statIcons = [Mountain, ShieldCheck, Users];
 
@@ -119,7 +121,7 @@ export default function Hero() {
                 </AnimatePresence>
               </motion.div>
             </div>
-            <div className="hero__dots" role="tablist" aria-label="Fotos">
+            <div className="hero__dots" role="tablist" aria-label={t.photos}>
               {HERO_SLIDES.map((h, i) => (
                 <button key={h.src} role="tab" aria-selected={i === slide} aria-label={h.alt} className={i === slide ? 'is-active' : undefined} onClick={() => setSlide(i)} />
               ))}

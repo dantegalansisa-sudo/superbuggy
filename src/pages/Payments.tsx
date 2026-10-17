@@ -14,8 +14,8 @@ export default function PaymentsPage() {
   const p = t.payments;
   const { book } = useBooking();
   useSeo({
-    title: 'Formas de pago · Super Buggies',
-    description: 'Paga tu excursión con PayPal, tarjeta o transferencia a Banco Popular. Reserva primero y te confirmamos por WhatsApp.',
+    title: `${p.pageTitle} · Super Buggies`,
+    description: t.seo.paymentsDesc,
     path: '/formas-de-pago',
   });
   return (

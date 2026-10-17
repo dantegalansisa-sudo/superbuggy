@@ -6,7 +6,7 @@ import SectionHead from './SectionHead';
 import MagneticButton from './MagneticButton';
 import { useLang } from '../i18n';
 import { useBooking } from '../booking';
-import { BOOKING_OPTIONS } from '../data';
+import { useCatalog } from '../content/catalog';
 import { Link } from 'react-router-dom';
 import { CONFIG, waLink } from '../config';
 
@@ -20,6 +20,7 @@ export default function Booking({ defaultTour = '' }: { defaultTour?: string }) 
   const { t } = useLang();
   const b = t.booking;
   const { prefill } = useBooking();
+  const { bookingOptions } = useCatalog();
   const [form, setForm] = useState<Form>({ ...EMPTY, tour: defaultTour });
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [hint, setHint] = useState('');
@@ -168,7 +169,7 @@ export default function Booking({ defaultTour = '' }: { defaultTour?: string }) 
                   <span>{b.tour}</span>
                   <select value={form.tour} onChange={set('tour')}>
                     <option value="">{b.tourAny}</option>
-                    {BOOKING_OPTIONS.map((o) => <option key={o}>{o}</option>)}
+                    {bookingOptions.map((o) => <option key={o}>{o}</option>)}
                   </select>
                 </label>
                 <label className="form__f">

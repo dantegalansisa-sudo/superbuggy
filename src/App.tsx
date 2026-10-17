@@ -3,7 +3,6 @@ import { Route, Routes } from 'react-router-dom';
 import { LangProvider } from './i18n';
 import { BookingProvider } from './booking';
 import { ToastProvider } from './components/Toast';
-import CustomCursor from './components/CustomCursor';
 import Navbar from './components/Navbar';
 import { Footer } from './components/Closing';
 import FloatingActions from './components/FloatingActions';
@@ -21,7 +20,6 @@ export default function App() {
         <ToastProvider>
           <BookingProvider>
             <ScrollManager />
-            <CustomCursor />
             <Navbar />
             <main>
               <Routes>

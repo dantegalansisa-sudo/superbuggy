@@ -1,4 +1,4 @@
-// Textos en español. Para agregar inglés: crear en.ts con la misma forma (Dict) y registrarlo en i18n/index.tsx.
+// Textos en español (idioma base). en.ts debe tener exactamente la misma forma (Dict).
 const es = {
   nav: {
     home: 'Inicio',
@@ -8,7 +8,8 @@ const es = {
     videos: 'Videos',
     contact: 'Contacto',
     book: 'Reservar ahora',
-    langSoon: 'English version coming soon',
+    openMenu: 'Abrir menú',
+    closeMenu: 'Cerrar menú',
   },
   hero: {
     eyebrow: ['Naturaleza', 'Aventura', 'Puerto Plata'],
@@ -21,7 +22,7 @@ const es = {
     script: 'Aventura sin límites',
     location: 'Puerto Plata',
     country: 'República Dominicana',
-    cards: ['Playas', 'Cascadas', 'Catamarán'],
+    cards: ['Playas', 'Cascadas', 'Party boat'],
   },
   quick: {
     experience: 'Experiencia',
@@ -33,7 +34,7 @@ const es = {
     persons: 'personas',
   },
   stats: [
-    { value: 9, suffix: '+', label: 'aventuras para elegir' },
+    { value: 10, suffix: '+', label: 'aventuras para elegir' },
     { value: 100, suffix: '%', label: 'Full insurance en cada salida' },
     { value: 4, suffix: 'x4', label: 'buggies y four wheel' },
   ],
@@ -105,6 +106,8 @@ const es = {
     duration: 'Duración',
     durationAsk: 'Consultar',
     perPerson: 'por persona',
+    payNow: (amount: number) => `Pagar US$${amount} con PayPal`,
+    payHint: 'Paga cuando te confirmemos la fecha por WhatsApp.',
     book: 'Reservar esta excursión',
     wa: 'Preguntar por WhatsApp',
     waText: (name: string) => `Hola Super Buggies, quiero información sobre la excursión "${name}".`,
@@ -159,6 +162,21 @@ const es = {
     slogan: 'Aventura hoy. Recuerdos para siempre.',
   },
   mobileBar: { home: 'Inicio', tours: 'Tours', book: 'Reservar', wa: 'WhatsApp' },
+  seo: {
+    homeTitle: 'Super Buggies · Tours en buggy y excursiones en Puerto Plata',
+    homeDesc: 'Tours en buggy, four wheel, party boat, pesca, cascadas y más excursiones en Puerto Plata, República Dominicana. Reserva en línea o por WhatsApp al 809-841-4125.',
+    excursionTitle: (name: string) => `${name} en Puerto Plata · Super Buggies`,
+    paymentsDesc: 'Paga tu excursión con PayPal, tarjeta o transferencia a Banco Popular. Reserva primero y te confirmamos por WhatsApp.',
+    notFoundTitle: 'Página no encontrada · Super Buggies',
+  },
+  notFound: {
+    eyebrow: 'Error 404',
+    title: 'Esta ruta no existe',
+    text: 'Pero tenemos muchas otras esperando por ti.',
+    cta: 'Ver excursiones',
+  },
+  photos: 'Fotos',
+  ui: { close: 'Cerrar', prev: 'Anterior', next: 'Siguiente' },
 };
 
 export type Dict = typeof es;
