@@ -3,7 +3,7 @@ export const CONFIG = {
   brand: 'Super Buggies',
   legalName: 'Victoriano Super Buggies S.R.L.',
   rnc: '132603761',
-  siteUrl: 'https://superbuggy.vercel.app', // cambiar al dominio final cuando exista
+  siteUrl: 'https://www.superbuggyspop.com', // dominio oficial (superbuggyspop.com redirige aquí)
   phoneDisplay: '809-841-4125',
   phoneHref: 'tel:+18098414125',
   whatsapp: '18098414125',
