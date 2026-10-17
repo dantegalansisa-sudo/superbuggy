@@ -17,13 +17,21 @@ function seoFiles(): Plugin {
         ['/terminos', '0.3', 'yearly'],
         ['/privacidad', '0.3', 'yearly'],
       ]
+      // Cada página en español y en inglés, enlazadas entre sí con hreflang
+      const alt = (path: string) =>
+        ['es', 'en'].map((l) => `    <xhtml:link rel="alternate" hreflang="${l}" href="${CONFIG.siteUrl}${path}?lang=${l}"/>`).join('\n') +
+        `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${CONFIG.siteUrl}${path}"/>`
       const urls = pages
-        .map(([path, priority, freq]) => `  <url>\n    <loc>${CONFIG.siteUrl}${path}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${freq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`)
+        .flatMap(([path, priority, freq]) =>
+          ['es', 'en'].map(
+            (l) => `  <url>\n    <loc>${CONFIG.siteUrl}${path}?lang=${l}</loc>\n${alt(path)}\n    <lastmod>${today}</lastmod>\n    <changefreq>${freq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`,
+          ),
+        )
         .join('\n')
       this.emitFile({
         type: 'asset',
         fileName: 'sitemap.xml',
-        source: `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`,
+        source: `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls}\n</urlset>\n`,
       })
       this.emitFile({
         type: 'asset',
