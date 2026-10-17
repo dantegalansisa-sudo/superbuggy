@@ -22,6 +22,8 @@ export const PAYMENTS = {
   paypalMe: 'samaleej',
   // Nombre que ve el cliente en PayPal al pagar (cuenta personal)
   paypalName: 'Samalee Santos',
+  // Porcentaje del depósito para asegurar el cupo (confirmar con el cliente)
+  depositPercent: 50,
   bank: {
     name: 'Banco Popular Dominicano',
     holder: 'Victoriano Super Buggies S.R.L.',

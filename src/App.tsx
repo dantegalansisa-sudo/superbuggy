@@ -6,6 +6,7 @@ import { ToastProvider } from './components/Toast';
 import Navbar from './components/Navbar';
 import { Footer } from './components/Closing';
 import FloatingActions from './components/FloatingActions';
+import CheckoutModal from './components/CheckoutModal';
 import ScrollManager from './components/ScrollManager';
 import Home from './pages/Home';
 import ExcursionPage from './pages/Excursion';
@@ -33,6 +34,7 @@ export default function App() {
             </main>
             <Footer />
             <FloatingActions />
+            <CheckoutModal />
           </BookingProvider>
         </ToastProvider>
       </LangProvider>

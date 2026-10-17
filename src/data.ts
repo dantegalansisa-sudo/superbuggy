@@ -14,6 +14,7 @@ export type Excursion = {
   duration?: string; // ej. '3 horas'
   priceUSD?: number; // vacío = "Consultar precio"
   priceUnit?: string; // por defecto 'por persona'
+  priceBasis?: 'person' | 'buggy'; // cómo se cuenta el total: por persona (defecto) o por buggy doble
   note?: string; // aviso destacado (ofertas, condiciones)
   includes: string[];
   bring: string[];
@@ -39,6 +40,7 @@ export const EXCURSIONS: Excursion[] = [
     tags: ['Río', 'Lodo', 'Senderos'],
     priceUSD: 99,
     priceUnit: 'por buggy doble (2 personas)',
+    priceBasis: 'buggy',
     note: LOCAL_NOTE,
     includes: ['Buggy doble 4x4', ...RIDE_INCLUDES],
     bring: BRING_DEFAULT,
@@ -57,6 +59,7 @@ export const EXCURSIONS: Excursion[] = [
     tags: ['Playa', 'Vistas', 'Costa'],
     priceUSD: 99,
     priceUnit: 'por buggy doble (2 personas)',
+    priceBasis: 'buggy',
     note: LOCAL_NOTE,
     includes: ['Buggy doble 4x4', ...RIDE_INCLUDES, 'Parada en la playa'],
     bring: [...BRING_DEFAULT, 'Traje de baño'],

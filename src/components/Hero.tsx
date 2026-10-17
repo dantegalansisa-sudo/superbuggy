@@ -28,7 +28,7 @@ export default function Hero() {
   const [date, setDate] = useState('');
   const [people, setPeople] = useState('2');
   const [slide, setSlide] = useState(0);
-  const { bookingOptions: BOOKING_OPTIONS, heroSlides: HERO_SLIDES } = useCatalog();
+  const { all, heroSlides: HERO_SLIDES } = useCatalog();
 
   // Carrusel automático; se reinicia el temporizador si el usuario elige una foto
   useEffect(() => {
@@ -181,7 +181,7 @@ export default function Hero() {
               <small>{t.quick.experience}</small>
               <select value={tour} onChange={(e) => setTour(e.target.value)}>
                 <option value="">{t.quick.choose}</option>
-                {BOOKING_OPTIONS.map((o) => <option key={o}>{o}</option>)}
+                {all.map((o) => <option key={o.slug} value={o.slug}>{o.priceUSD ? `${o.name} · US$${o.priceUSD}` : o.name}</option>)}
               </select>
             </span>
           </label>

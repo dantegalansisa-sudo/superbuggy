@@ -40,7 +40,7 @@ export function TourCard({ tour }: { tour: Excursion }) {
           {tour.duration && <span><Clock size={14} /> {tour.duration}</span>}
         </div>
         <div className="tour__actions">
-          <button className="btn btn--primary btn--sm" onClick={() => book({ tour: tour.name })}>
+          <button className="btn btn--primary btn--sm" onClick={() => book({ tour: tour.slug })}>
             {t.tours.book}
           </button>
           <Link to={excursionPath(tour.slug)} className="tour__cta">

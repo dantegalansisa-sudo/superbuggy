@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Building2, CalendarCheck, CreditCard, ShieldCheck } from 'lucide-react';
 import WhatsAppIcon from './WhatsAppIcon';
 import { useLang } from '../i18n';
+import { useBooking } from '../booking';
 
 // Franja corta que explica cómo se paga y lleva a /formas-de-pago
 export default function PaymentStrip() {
   const { t } = useLang();
   const p = t.payments;
+  const { book } = useBooking();
   const icons = [CalendarCheck, WhatsAppIcon, CreditCard, ShieldCheck];
   return (
     <section className="pstrip">
@@ -30,7 +32,8 @@ export default function PaymentStrip() {
         <div className="pstrip__methods">
           <span><CreditCard size={16} /> PayPal</span>
           <span><Building2 size={16} /> Banco Popular</span>
-          <Link to="/formas-de-pago" className="btn btn--outline btn--sm">{p.more} <ArrowRight size={16} /></Link>
+          <Link to="/formas-de-pago" className="btn btn--link">{p.more}</Link>
+          <button className="btn btn--primary btn--sm" onClick={() => book()}>{t.excursion.book} <ArrowRight size={16} /></button>
         </div>
       </div>
     </section>

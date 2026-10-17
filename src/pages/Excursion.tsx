@@ -1,12 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Backpack, Check, Clock, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Backpack, Building2, Check, Clock, CreditCard, Lock, Minus, Plus, ShieldCheck, Sparkles } from 'lucide-react';
 import RevealText from '../components/RevealText';
 import MagneticButton from '../components/MagneticButton';
 import WhatsAppIcon from '../components/WhatsAppIcon';
 import Booking from '../components/Booking';
-import PaymentStrip from '../components/PaymentStrip';
 import SectionHead from '../components/SectionHead';
 import { PriceTag, TourCard } from '../components/Tours';
 import NotFound from './NotFound';
@@ -16,7 +15,7 @@ import { useSeo } from '../hooks/useSeo';
 import { useParallax } from '../hooks/useParallax';
 import { excursionPath, type Excursion } from '../data';
 import { useCatalog } from '../content/catalog';
-import { CONFIG, paypalLink, waLink } from '../config';
+import { CONFIG, waLink } from '../config';
 import { cardVariants, containerVariants, EASINGS } from '../utils/easings';
 
 // Datos estructurados para Google (TouristTrip)
@@ -49,6 +48,7 @@ export default function ExcursionPage() {
   const x = t.excursion;
   const { book } = useBooking();
   const { ref, y } = useParallax(60);
+  const [qty, setQty] = useState(2);
 
   useSeo({
     title: ex ? t.seo.excursionTitle(ex.name) : t.seo.notFoundTitle,
@@ -76,7 +76,7 @@ export default function ExcursionPage() {
           <RevealText tag="h1" className="xhero__title" animateOnMount delay={0.2}>{ex.name}</RevealText>
           <motion.p className="xhero__lead" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>{ex.short}</motion.p>
           <motion.div className="xhero__ctas" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.75 }}>
-            <MagneticButton className="btn btn--primary btn--lg" onClick={() => book({ tour: ex.name })}>
+            <MagneticButton className="btn btn--primary btn--lg" onClick={() => book({ tour: ex.slug, people: String(qty) })}>
               {x.book} <ArrowRight size={18} />
             </MagneticButton>
             <MagneticButton className="btn btn--wa btn--lg" href={wa} target="_blank">
@@ -139,18 +139,27 @@ export default function ExcursionPage() {
               {ex.priceUSD && <small>{ex.priceUnit ?? x.perPerson}</small>}
             </div>
             <p className="xcard__row"><Clock size={18} /> {x.duration}: <strong>{ex.duration ?? x.durationAsk}</strong></p>
-            <button className="btn btn--primary btn--lg xcard__btn" onClick={() => book({ tour: ex.name })}>
-              {x.book} <ArrowRight size={18} />
+            <div className="xcard__calc">
+              <span>{x.howMany}</span>
+              <div className="co__qty">
+                <button type="button" onClick={() => setQty((q) => Math.max(1, q - 1))} aria-label="-"><Minus size={16} /></button>
+                <strong>{qty}</strong>
+                <button type="button" onClick={() => setQty((q) => Math.min(30, q + 1))} aria-label="+"><Plus size={16} /></button>
+              </div>
+              <small>{ex.priceBasis === 'buggy' ? t.checkout.buggiesHint(qty) : `${qty} ${qty === 1 ? t.quick.person : t.quick.persons}`}</small>
+            </div>
+            {ex.priceUSD && (
+              <p className="xcard__total"><span>{t.checkout.total}</span> US${(ex.priceUSD * qty).toLocaleString('en-US')}</p>
+            )}
+            <button className="btn btn--primary btn--lg xcard__btn" onClick={() => book({ tour: ex.slug, people: String(qty) })}>
+              <Lock size={16} /> {x.book}
             </button>
+            <div className="xcard__methods" aria-hidden="true">
+              <span><CreditCard size={14} /> PayPal</span><span><CreditCard size={14} /> Visa / MC</span><span><Building2 size={14} /> Banco Popular</span>
+            </div>
             <a className="btn btn--wa btn--lg xcard__btn" href={wa} target="_blank" rel="noopener noreferrer">
               <WhatsAppIcon size={18} /> {x.wa}
             </a>
-            {ex.priceUSD && paypalLink(ex.priceUSD) && (
-              <div className="xcard__pay">
-                <a className="btn btn--paypal btn--sm" href={paypalLink(ex.priceUSD)} target="_blank" rel="noopener noreferrer">{x.payNow(ex.priceUSD)}</a>
-                <small>{x.payHint}</small>
-              </div>
-            )}
             <ul className="xcard__trust">
               {x.trust.map((tr) => <li key={tr}><ShieldCheck size={16} /> {tr}</li>)}
             </ul>
@@ -158,8 +167,7 @@ export default function ExcursionPage() {
         </div>
       </section>
 
-      <Booking defaultTour={ex.name} />
-      <PaymentStrip />
+      <Booking defaultTour={ex.slug} />
 
       <section className="section">
         <div className="container">
