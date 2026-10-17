@@ -2,7 +2,7 @@ import type { Excursion } from '../data';
 
 // English text for each excursion (same slug as in data.ts). Photos, prices and duration numbers come from data.ts.
 type Translated = Pick<Excursion, 'name' | 'short' | 'description' | 'tags' | 'includes' | 'bring' | 'highlights'> &
-  Partial<Pick<Excursion, 'priceUnit' | 'note' | 'duration'>>;
+  Partial<Pick<Excursion, 'priceUnit' | 'note' | 'duration' | 'schedule'>>;
 
 const BRING_DEFAULT = ['Clothes that can get muddy or wet', 'Sunscreen', 'A change of clothes', 'Closed-toe shoes'];
 const RIDE_INCLUDES = ['Protective helmet', 'Goggles', 'Bottle of water per person', 'Shot of mamajuana', 'Local guide', 'Full insurance'];
@@ -10,17 +10,27 @@ const LOCAL_NOTE = 'Local customer? Ask about our deals for groups and families.
 const DOUBLE_BUGGY = 'per double buggy (2 people)';
 
 export const EXCURSIONS_EN: Record<string, Translated> = {
-  'buggy-rio-lodo': {
-    name: 'River & Mud Buggy',
-    short: 'Rivers, puddles and dirt trails.',
+  'buggy-maimon-playa-teco': {
+    name: 'Maimón Guzmancito Buggy & Teco Beach',
+    short: 'Puddles, mud, rocky trails and Teco Beach.',
     description:
-      'Our most popular tour: drive your own buggy along the country roads of Puerto Plata, cross rivers and splash through mud with a local guide leading the group. Pure adrenaline and Dominican countryside views.',
-    tags: ['River', 'Mud', 'Trails'],
+      "Our adventure begins in Maimón Guzmancito: you'll drive through water puddles, mud, dust and rocky trails full of adrenaline. We stop at a small traditional Dominican house for coffee, water, fresh fruit and a shot of Mamajuana (bathroom available, and you can buy local accessories). Then we continue to Teco Beach, with time to swim, walk, relax and, if you like, buy food. At the end we head back to finish the tour.",
+    tags: ['Mud', 'Local house', 'Teco Beach'],
+    duration: '2 hours 30 minutes',
+    schedule: 'Morning and afternoon departures, every day from 8:00 AM to 6:00 PM.',
     priceUnit: DOUBLE_BUGGY,
     note: LOCAL_NOTE,
-    includes: ['Double 4x4 buggy', ...RIDE_INCLUDES],
-    bring: BRING_DEFAULT,
-    highlights: ['River crossings', 'Muddy roads', 'Countryside views', 'Photo stops'],
+    includes: [
+      'Double 4x4 buggy',
+      'Protective helmet',
+      'Drinking water',
+      'Safety instructions and a quick driving briefing before departure',
+      'Coffee, fresh fruit and water at the traditional house',
+      'Mamajuana shot',
+      'Stop at Teco Beach',
+    ],
+    bring: ["Clothes and shoes you don't mind getting dirty or wet", 'Swimsuit', 'Sunscreen', 'Towel', 'Cash if you want to buy food or souvenirs'],
+    highlights: ['Puddles, mud and dust', 'Rocky trails', 'Traditional Dominican house', 'Swim at Teco Beach'],
   },
   'buggy-costa-playa': {
     name: 'Coast & Beach Buggy',

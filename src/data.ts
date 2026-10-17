@@ -12,6 +12,7 @@ export type Excursion = {
   description: string; // párrafo de la página de detalle
   tags: string[];
   duration?: string; // ej. '3 horas'
+  schedule?: string; // horarios de salida
   priceUSD?: number; // vacío = "Consultar precio"
   priceUnit?: string; // por defecto 'por persona'
   priceBasis?: 'person' | 'buggy'; // cómo se cuenta el total: por persona (defecto) o por buggy doble
@@ -29,22 +30,32 @@ const LOCAL_NOTE = '¿Eres cliente local? Pregunta por nuestras ofertas para gru
 
 export const EXCURSIONS: Excursion[] = [
   {
-    slug: 'buggy-rio-lodo',
-    name: 'Buggy Río & Lodo',
+    slug: 'buggy-maimon-playa-teco',
+    name: 'Buggy Maimón Guzmancito & Playa Teco',
     category: 'buggy',
     image: '/images/buggy-18-agua.webp',
     gallery: ['/images/buggy-18-agua.webp', '/images/buggy-rio.webp', '/images/buggies-rojos.webp', '/images/grupo-buggies.webp'],
-    short: 'Ríos, charcos y senderos de tierra.',
+    short: 'Charcos, lodo, caminos rocosos y Playa Teco.',
     description:
-      'El tour más buscado: maneja tu propio buggy por caminos rurales de Puerto Plata, cruza ríos y atraviesa charcos de lodo con un guía local acompañando al grupo. Pura adrenalina y paisajes de campo dominicano.',
-    tags: ['Río', 'Lodo', 'Senderos'],
+      'Nuestra aventura comienza en Maimón Guzmancito: conducirás por charcos de agua, lodo, polvo y caminos rocosos llenos de adrenalina. Haremos una parada en una casa tradicional dominicana con café, agua, frutas frescas y un shot de mamajuana (hay baño y puedes comprar accesorios locales). Luego seguimos hacia Playa Teco, con tiempo para bañarte, caminar, relajarte y, si quieres, comprar comida. Al final regresamos para concluir la excursión.',
+    tags: ['Lodo', 'Casa típica', 'Playa Teco'],
+    duration: '2 horas y 30 minutos',
+    schedule: 'Salidas en la mañana y en la tarde, todos los días de 8:00 a. m. a 6:00 p. m.',
     priceUSD: 99,
     priceUnit: 'por buggy doble (2 personas)',
     priceBasis: 'buggy',
     note: LOCAL_NOTE,
-    includes: ['Buggy doble 4x4', ...RIDE_INCLUDES],
-    bring: BRING_DEFAULT,
-    highlights: ['Cruce de ríos', 'Caminos de lodo', 'Paisajes rurales', 'Fotos en ruta'],
+    includes: [
+      'Buggy doble 4x4',
+      'Casco protector',
+      'Agua potable',
+      'Instrucciones de seguridad y explicación de manejo antes de salir',
+      'Café, frutas frescas y agua en la casa tradicional',
+      'Shot de mamajuana',
+      'Parada en Playa Teco',
+    ],
+    bring: ['Ropa y calzado que no te importe ensuciar o mojar', 'Traje de baño', 'Protector solar', 'Toalla', 'Dinero si quieres comprar comida o accesorios'],
+    highlights: ['Charcos, lodo y polvo', 'Caminos rocosos', 'Casa tradicional dominicana', 'Baño en Playa Teco'],
     featured: true,
   },
   {

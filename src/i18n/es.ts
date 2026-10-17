@@ -115,6 +115,8 @@ const es = {
     bring: 'Qué llevar',
     duration: 'Duración',
     durationAsk: 'Consultar',
+    schedule: 'Salidas',
+    hours: 'Horario',
     perPerson: 'por persona',
     payNow: (amount: number) => `Pagar US$${amount} con PayPal`,
     payHint: 'Paga cuando te confirmemos la fecha por WhatsApp.',

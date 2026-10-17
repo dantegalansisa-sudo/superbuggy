@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Mail, MapPin, Phone } from 'lucide-react';
+import { ArrowRight, Clock, Mail, MapPin, Phone } from 'lucide-react';
 import WhatsAppIcon from './WhatsAppIcon';
 import Logo from './Logo';
 import MagneticButton from './MagneticButton';
@@ -39,7 +39,7 @@ export function CtaBand() {
 }
 
 export function Footer() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const f = t.footer;
   const { all } = useCatalog();
   return (
@@ -82,6 +82,7 @@ export function Footer() {
             <li><a href={CONFIG.phoneHref}><Phone size={16} /> {CONFIG.phoneDisplay}</a></li>
             <li><a href={`mailto:${CONFIG.email}`}><Mail size={16} /> {CONFIG.email}</a></li>
             <li><MapPin size={16} /> {CONFIG.address}</li>
+            <li><Clock size={16} /> {CONFIG.hours[lang]}</li>
           </ul>
         </div>
       </div>

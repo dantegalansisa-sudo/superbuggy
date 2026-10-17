@@ -117,6 +117,8 @@ const en: Dict = {
     bring: 'What to bring',
     duration: 'Duration',
     durationAsk: 'Ask us',
+    schedule: 'Departures',
+    hours: 'Hours',
     perPerson: 'per person',
     payNow: (amount: number) => `Pay US$${amount} with PayPal`,
     payHint: 'Pay once we confirm your date on WhatsApp.',

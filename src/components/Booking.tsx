@@ -11,7 +11,7 @@ import { CONFIG, waLink } from '../config';
 // mode="request": formulario de solicitud sin pago (inicio).
 // mode="checkout": reserva y pago en 3 pasos (página de cada excursión).
 export default function Booking({ mode = 'request', defaultTour = '' }: { mode?: 'request' | 'checkout'; defaultTour?: string }) {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const b = t.booking;
   const pay = mode === 'checkout';
   return (
@@ -34,7 +34,7 @@ export default function Booking({ mode = 'request', defaultTour = '' }: { mode?:
             <li>
               <a href={CONFIG.phoneHref}>
                 <span className="booking__ic"><Phone size={20} /></span>
-                <span><small>{b.call}</small>{CONFIG.phoneDisplay}</span>
+                <span><small>{b.call} · {CONFIG.hours[lang]}</small>{CONFIG.phoneDisplay}</span>
               </a>
             </li>
             {CONFIG.email && (

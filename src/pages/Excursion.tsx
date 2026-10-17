@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Backpack, Banknote, Building2, Check, Clock, CreditCard, Lock, Minus, Plus, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Backpack, Banknote, Building2, Check, Clock, CreditCard, Lock, Minus, Plus, ShieldCheck, Sparkles, Sun } from 'lucide-react';
 import RevealText from '../components/RevealText';
 import MagneticButton from '../components/MagneticButton';
 import WhatsAppIcon from '../components/WhatsAppIcon';
@@ -139,6 +139,7 @@ export default function ExcursionPage() {
               {ex.priceUSD && <small>{ex.priceUnit ?? x.perPerson}</small>}
             </div>
             <p className="xcard__row"><Clock size={18} /> {x.duration}: <strong>{ex.duration ?? x.durationAsk}</strong></p>
+            {ex.schedule && <p className="xcard__row xcard__row--small"><Sun size={18} /> {ex.schedule}</p>}
             <div className="xcard__calc">
               <span>{x.howMany}</span>
               <div className="co__qty">

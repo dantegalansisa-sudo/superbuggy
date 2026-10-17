@@ -10,6 +10,7 @@ export const CONFIG = {
   email: 'superbuggiesmaimonpop@gmail.com',
   address: 'Calle Principal #2, Los Ciruelos, Montellano, Puerto Plata',
   mapQuery: 'Los Ciruelos, Montellano, Puerto Plata, República Dominicana',
+  hours: { es: 'Todos los días, 8:00 a. m. – 6:00 p. m.', en: 'Every day, 8:00 AM – 6:00 PM' },
   // Las reservas se envían a esta función (api/booking.ts), que manda el correo con Resend.
   // El correo de destino y la clave se configuran en Vercel (BOOKING_TO, RESEND_API_KEY).
   bookingEndpoint: '/api/booking',

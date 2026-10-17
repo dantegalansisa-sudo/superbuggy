@@ -166,3 +166,9 @@
 .xcard__pay .btn { width: 100%; }
 .xcard__pay small { font-size: 0.78rem; color: var(--muted); text-align: center; }
 .xnote { margin-top: 18px; padding: 14px 18px; border-radius: 14px; background: var(--orange-soft); color: var(--orange-2); font-weight: 700; }
+
+.xcard__row--small { align-items: flex-start; font-size: 0.86rem; line-height: 1.4; }
+.xcard__row--small svg { flex-shrink: 0; margin-top: 1px; }
+
+.xcard__price { flex-wrap: wrap; }
+.xcard__price > small { flex-basis: 100%; margin-top: -4px; }
