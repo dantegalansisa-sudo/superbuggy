@@ -5,7 +5,6 @@ import Reels from '../components/Reels';
 import Gallery from '../components/Gallery';
 import Booking from '../components/Booking';
 import { CtaBand } from '../components/Closing';
-import PaymentStrip from '../components/PaymentStrip';
 import { useSeo } from '../hooks/useSeo';
 import { useLang } from '../i18n';
 
@@ -20,7 +19,6 @@ export default function Home() {
       <CtaBand />
       <Reels />
       <Gallery />
-      <PaymentStrip />
       <Booking />
     </>
   );

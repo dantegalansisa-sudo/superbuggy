@@ -81,7 +81,7 @@ export const TERMS: LegalDoc = {
       h: '2. Precios y pagos',
       p: [
         'Los precios se expresan en dólares estadounidenses (US$) o pesos dominicanos (RD$) y se confirman al momento de la reserva. Pueden variar según temporada, tamaño del grupo o servicios adicionales.',
-        `Aceptamos pagos por PayPal (incluye tarjetas de crédito y débito) y por transferencia o depósito a las cuentas de ${CONFIG.legalName} en Banco Popular Dominicano. Para confirmar la reserva puede requerirse un depósito o el pago total por adelantado. Envía tu comprobante por WhatsApp para validar el pago.`,
+        `Aceptamos pagos por PayPal (incluye tarjetas de crédito y débito), por transferencia o depósito a las cuentas de ${CONFIG.legalName} en Banco Popular Dominicano, y en efectivo (US$ o RD$) el día de la excursión. Para confirmar la reserva puede requerirse un depósito o el pago total por adelantado. Envía tu comprobante por WhatsApp para validar el pago.`,
         'Las comisiones de tu banco, de PayPal o de cambio de moneda corren por cuenta de quien paga.',
       ],
     },

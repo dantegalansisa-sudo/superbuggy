@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Building2, CalendarDays, CheckCircle2, Clock, Copy, CreditCard, Lock, Minus, Plus, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Banknote, Building2, CalendarDays, CheckCircle2, Clock, Copy, CreditCard, Lock, Minus, Plus, ShieldCheck } from 'lucide-react';
 import WhatsAppIcon from './WhatsAppIcon';
 import { useToast } from './Toast';
 import { useLang } from '../i18n';
@@ -10,7 +10,7 @@ import { CONFIG, PAYMENTS, paypalLink, waLink } from '../config';
 import { EXCURSIONS } from '../data';
 import type { Prefill } from '../booking';
 
-type Method = 'paypal' | 'bank' | 'later';
+type Method = 'paypal' | 'bank' | 'cash';
 
 const today = () => new Date().toISOString().slice(0, 10);
 const fmt = (n: number) => `US$${n.toLocaleString('en-US')}`;
@@ -39,6 +39,7 @@ export default function Checkout({ prefill, onClose }: { prefill?: Prefill; onCl
   const [hint, setHint] = useState('');
   const [code, setCode] = useState(newCode);
   const [done, setDone] = useState(false);
+  const [lastVia, setLastVia] = useState('');
 
   // Cada vez que se abre desde un botón "Reservar" se reinicia con los datos que trae
   useEffect(() => {
@@ -76,16 +77,18 @@ export default function Checkout({ prefill, onClose }: { prefill?: Prefill; onCl
     return [w.hello, '', ...rows.filter(([, v]) => v.trim()).map(([k, v]) => `• ${k}: ${v}`)].join('\n');
   };
 
-  // Al llegar al pago se avisa por correo a la empresa (queda registrada aunque el cliente no termine).
-  // El envío lo hace la función /api/booking con Resend; la clave vive solo en Vercel.
-  const notifyEmail = () => {
+  // Al confirmar se envía la reserva por correo a la empresa y una copia al cliente
+  // (función /api/booking con Resend; la clave vive solo en Vercel).
+  const sendEmail = (status: string, payment: string) => {
     fetch(CONFIG.bookingEndpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       keepalive: true,
       body: JSON.stringify({
+        type: 'booking',
         code,
-        status: 'Pendiente de pago',
+        status,
+        payment,
         excursion: EXCURSIONS.find((e) => e.slug === slug)?.name ?? ex?.name, // la empresa lo recibe en español
         date,
         quantity: qtyLabel,
@@ -107,12 +110,19 @@ export default function Checkout({ prefill, onClose }: { prefill?: Prefill; onCl
   const goStep3 = () => {
     if (!name.trim() || !phone.trim()) return setHint(c.required2);
     setHint('');
-    notifyEmail();
     setStep(3);
   };
 
-  const finish = (via: string) => {
-    window.open(waLink(waMessage(via)), '_blank', 'noopener');
+  // PayPal y transferencia: correo + WhatsApp para enviar el comprobante.
+  // Efectivo: solo correo; WhatsApp queda como opción en la pantalla final.
+  const finish = (m: Method) => {
+    const amount = amountLabel || c.priceAsk;
+    const via = m === 'paypal' ? c.wa.viaPaypal(amount) : m === 'bank' ? c.wa.viaBank(amount) : c.wa.viaCash;
+    const status = m === 'cash' ? 'Confirmada · paga en efectivo el día del tour' : 'Pago enviado · verificar comprobante';
+    const payment = m === 'paypal' ? `PayPal ${amount}` : m === 'bank' ? `Transferencia Banco Popular ${amount}` : `Efectivo el día del tour (${total ? fmt(total) : 'a confirmar'})`;
+    sendEmail(status, payment);
+    setLastVia(via);
+    if (m !== 'cash') window.open(waLink(waMessage(via)), '_blank', 'noopener');
     setDone(true);
   };
 
@@ -142,7 +152,8 @@ export default function Checkout({ prefill, onClose }: { prefill?: Prefill; onCl
       <motion.div className="co co__done" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
         <CheckCircle2 size={60} />
         <h3>{c.doneTitle}</h3>
-        <p>{c.doneText(code)}</p>
+        <p>{c.doneText(code)}{/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? ` ${c.doneCopy}` : ''}</p>
+        <a className="btn btn--wa" href={waLink(waMessage(lastVia))} target="_blank" rel="noopener noreferrer"><WhatsAppIcon size={16} /> {c.waAlso}</a>
         <div className="co__actions co__actions--center">
           <button className="btn btn--outline btn--sm" onClick={restart}>{c.doneAgain}</button>
           {onClose && <button className="btn btn--link" onClick={onClose}>{c.close}</button>}
@@ -255,7 +266,7 @@ export default function Checkout({ prefill, onClose }: { prefill?: Prefill; onCl
               <p className="co__summary-total"><span>{c.total}</span> {total ? fmt(total) : c.priceAsk}</p>
             </div>
 
-            {total && (
+            {total && method !== 'cash' && (
               <div className="co__modes" role="radiogroup" aria-label={c.payNow}>
                 <button role="radio" aria-checked={mode === 'full'} className={mode === 'full' ? 'is-on' : undefined} onClick={() => setMode('full')}>
                   <span>{c.full}</span><strong>{fmt(total)}</strong>
@@ -265,14 +276,14 @@ export default function Checkout({ prefill, onClose }: { prefill?: Prefill; onCl
                 </button>
               </div>
             )}
-            {total && mode === 'deposit' && <p className="co__hint">{c.depositHint(pct)}</p>}
+            {total && method !== 'cash' && mode === 'deposit' && <p className="co__hint">{c.depositHint(pct)}</p>}
 
             <p className="co__label">{c.method}</p>
             <div className="co__methods" role="radiogroup" aria-label={c.method}>
               {([
                 ['paypal', CreditCard, c.paypal, c.paypalDesc],
                 ['bank', Building2, c.bank, c.bankDesc],
-                ['later', WhatsAppIcon, c.later, c.laterDesc],
+                ['cash', Banknote, c.cash, c.cashDesc],
               ] as const).map(([m, Icon, title, desc]) => (
                 <button key={m} role="radio" aria-checked={method === m} className={`co__method${method === m ? ' is-on' : ''}`} onClick={() => setMethod(m)}>
                   <span className={`co__micon co__micon--${m}`}><Icon size={20} /></span>
@@ -289,7 +300,7 @@ export default function Checkout({ prefill, onClose }: { prefill?: Prefill; onCl
                   </a>
                   <p className="co__hint">{c.paypalSteps(code)}</p>
                   {PAYMENTS.paypalName && <p className="co__hint">{t.payments.paypalNote(PAYMENTS.paypalName)}</p>}
-                  <button className="btn btn--wa" onClick={() => finish(c.wa.viaPaypal(amountLabel || c.priceAsk))}><WhatsAppIcon size={16} /> {c.paid}</button>
+                  <button className="btn btn--wa" onClick={() => finish('paypal')}><WhatsAppIcon size={16} /> {c.paid}</button>
                 </>
               )}
               {method === 'bank' && (
@@ -304,11 +315,15 @@ export default function Checkout({ prefill, onClose }: { prefill?: Prefill; onCl
                     ))}
                   </ul>
                   <p className="co__hint">{PAYMENTS.bank.name} · {PAYMENTS.bank.holder} · RNC {PAYMENTS.bank.rnc}<br />{c.bankFx}</p>
-                  <button className="btn btn--wa" onClick={() => finish(c.wa.viaBank(amountLabel || c.priceAsk))}><WhatsAppIcon size={16} /> {c.transferred}</button>
+                  <button className="btn btn--wa" onClick={() => finish('bank')}><WhatsAppIcon size={16} /> {c.transferred}</button>
                 </>
               )}
-              {method === 'later' && (
-                <button className="btn btn--wa btn--lg" onClick={() => finish(c.wa.viaLater)}><WhatsAppIcon size={18} /> {c.sendLater}</button>
+              {method === 'cash' && (
+                <>
+                  <p className="co__hint">{c.cashNote}</p>
+                  {total && <p className="co__cash"><span>{c.total}</span> {fmt(total)}</p>}
+                  <button className="btn btn--primary btn--lg" onClick={() => finish('cash')}><CheckCircle2 size={18} /> {c.cashBtn}</button>
+                </>
               )}
             </div>
 

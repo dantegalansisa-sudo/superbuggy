@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Backpack, Building2, Check, Clock, CreditCard, Lock, Minus, Plus, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Backpack, Banknote, Building2, Check, Clock, CreditCard, Lock, Minus, Plus, ShieldCheck, Sparkles } from 'lucide-react';
 import RevealText from '../components/RevealText';
 import MagneticButton from '../components/MagneticButton';
 import WhatsAppIcon from '../components/WhatsAppIcon';
@@ -46,7 +46,7 @@ export default function ExcursionPage() {
   const ex = find(slug);
   const { t } = useLang();
   const x = t.excursion;
-  const { book } = useBooking();
+  const { checkout: book } = useBooking();
   const { ref, y } = useParallax(60);
   const [qty, setQty] = useState(2);
 
@@ -155,7 +155,7 @@ export default function ExcursionPage() {
               <Lock size={16} /> {x.book}
             </button>
             <div className="xcard__methods" aria-hidden="true">
-              <span><CreditCard size={14} /> PayPal</span><span><CreditCard size={14} /> Visa / MC</span><span><Building2 size={14} /> Banco Popular</span>
+              <span><CreditCard size={14} /> PayPal</span><span><CreditCard size={14} /> Visa / MC</span><span><Building2 size={14} /> Banco Popular</span><span><Banknote size={14} /> {t.checkout.cashShort}</span>
             </div>
             <a className="btn btn--wa btn--lg xcard__btn" href={wa} target="_blank" rel="noopener noreferrer">
               <WhatsAppIcon size={18} /> {x.wa}
@@ -167,7 +167,7 @@ export default function ExcursionPage() {
         </div>
       </section>
 
-      <Booking defaultTour={ex.slug} />
+      <Booking mode="checkout" defaultTour={ex.slug} />
 
       <section className="section">
         <div className="container">

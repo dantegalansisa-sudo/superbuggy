@@ -80,7 +80,7 @@ export const TERMS_EN: LegalDoc = {
       h: '2. Prices and payments',
       p: [
         'Prices are shown in US dollars (US$) or Dominican pesos (RD$) and are confirmed at the time of booking. They may vary by season, group size or additional services.',
-        `We accept payments by PayPal (including credit and debit cards) and by transfer or deposit to the ${CONFIG.legalName} accounts at Banco Popular Dominicano. A deposit or full prepayment may be required to confirm the booking. Send your receipt on WhatsApp so we can validate the payment.`,
+        `We accept payments by PayPal (including credit and debit cards), by transfer or deposit to the ${CONFIG.legalName} accounts at Banco Popular Dominicano, and in cash (US$ or RD$) on the day of the excursion. A deposit or full prepayment may be required to confirm the booking. Send your receipt on WhatsApp so we can validate the payment.`,
         'Fees charged by your bank, PayPal or for currency exchange are paid by the payer.',
       ],
     },

@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
-import { Building2, Copy, CreditCard, ExternalLink } from 'lucide-react';
+import { Banknote, Building2, Copy, CreditCard, ExternalLink } from 'lucide-react';
 import WhatsAppIcon from './WhatsAppIcon';
 import { useLang } from '../i18n';
 import { useToast } from './Toast';
+import { useBooking } from '../booking';
 import { PAYMENTS, paypalLink, waLink } from '../config';
 import { cardVariants, containerVariants } from '../utils/easings';
 
@@ -11,6 +12,7 @@ export default function PaymentMethods() {
   const { t } = useLang();
   const p = t.payments;
   const toast = useToast();
+  const { book } = useBooking();
   const paypal = paypalLink();
 
   const copy = async (value: string) => {
@@ -41,6 +43,16 @@ export default function PaymentMethods() {
             {p.paypalAsk} <WhatsAppIcon size={16} />
           </a>
         )}
+      </motion.article>
+
+      <motion.article className="pay__card" variants={cardVariants}>
+        <span className="pay__icon pay__icon--cash"><Banknote size={24} /></span>
+        <h3>{p.cash}</h3>
+        <p>{p.cashText}</p>
+        <div className="pay__brands" aria-hidden="true">
+          <span>US$</span><span>RD$</span>
+        </div>
+        <button className="btn btn--primary pay__push" onClick={() => book()}>{p.cashCta}</button>
       </motion.article>
 
       <motion.article className="pay__card" variants={cardVariants}>

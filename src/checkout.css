@@ -100,3 +100,15 @@
   .co__progress li { font-size: 0.72rem; gap: 5px; }
   .co__total p { font-size: 1.6rem; }
 }
+
+/* Formulario de solicitud y efectivo */
+.form__trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.form__f > span em { font-style: normal; font-weight: 500; color: var(--muted); }
+.co__cash { display: flex; justify-content: space-between; align-items: baseline; padding: 10px 14px; border-radius: 12px; background: var(--sand); font-family: var(--f-display); font-size: 1.4rem; font-weight: 800; }
+.co__cash span { font-family: var(--f-body); font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+.co__micon--cash { background: #e7f6ec; color: #1b7a43; }
+.pay { grid-template-columns: repeat(3, 1fr); }
+.pay__icon--cash { background: #e7f6ec; color: #1b7a43; }
+.pay__push { margin-top: auto; }
+@media (max-width: 1100px) { .pay { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 900px) { .pay { grid-template-columns: 1fr; } }

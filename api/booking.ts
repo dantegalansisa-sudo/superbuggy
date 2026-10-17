@@ -9,6 +9,9 @@
 //   SEND_CUSTOMER_EMAIL   "true" para enviar también la confirmación al cliente (requiere dominio verificado)
 
 type Booking = {
+  type?: 'request' | 'booking'; // request = solicitud sin pago (inicio); booking = reserva desde la excursión
+  payment?: string; // método de pago elegido en el checkout
+  message?: string; // comentarios del cliente
   code: string;
   status?: string;
   excursion: string;
@@ -103,8 +106,12 @@ export async function POST(request: Request) {
     email: clip(b.email, 160),
     pickup: clip(b.pickup),
     lang: b.lang === 'en' ? 'en' : 'es',
+    type: b.type === 'request' ? 'request' : 'booking',
+    payment: clip(b.payment, 120),
+    message: clip(b.message, 1000),
   };
-  if (!data.code || !data.excursion || !data.name || !data.phone) return json({ ok: false, error: 'missing_fields' }, 400);
+  const isRequest = data.type === 'request';
+  if (!data.code || !data.name || !data.phone) return json({ ok: false, error: 'missing_fields' }, 400);
   const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email);
 
   const waNumber = data.phone.replace(/\D/g, '');
@@ -118,21 +125,29 @@ export async function POST(request: Request) {
     row('Fecha', esc(data.date)),
     row('Cantidad', esc(data.quantity)),
     row('Total', esc(data.total)),
+    row('Pago', esc(data.payment)),
     row('Cliente', esc(data.name)),
     row('WhatsApp', `<a href="${esc(waUrl)}" style="color:${ORANGE}">${esc(data.phone)}</a>`),
     row('Correo', validEmail ? `<a href="mailto:${esc(data.email)}" style="color:${ORANGE}">${esc(data.email)}</a>` : ''),
     row('Recogida', esc(data.pickup)),
+    row('Comentarios', esc(data.message).replace(/\n/g, '<br>')),
     row('Idioma', data.lang === 'en' ? 'Inglés' : 'Español'),
   ].join('');
 
   try {
     await send({
       to: [TO],
-      subject: `Nueva reserva ${data.code}: ${data.excursion} — ${data.name}`,
+      subject: isRequest
+        ? `Nueva solicitud ${data.code}: ${data.excursion} — ${data.name}`
+        : `Nueva reserva ${data.code} (${data.payment || 'sin método'}): ${data.excursion} — ${data.name}`,
       ...(validEmail ? { reply_to: data.email } : {}),
       html: layout(
-        'Nueva reserva desde la web',
-        'El cliente llegó al paso de pago. Confirma la disponibilidad y espera el comprobante por WhatsApp.',
+        isRequest ? 'Nueva solicitud desde la web' : 'Nueva reserva desde la web',
+        isRequest
+          ? 'Un cliente quiere reservar. Escríbele por WhatsApp para confirmar disponibilidad, precio y punto de encuentro.'
+          : data.payment.startsWith('Efectivo')
+            ? 'Reserva con pago en efectivo el día de la excursión. Confirma hora y punto de encuentro con el cliente.'
+            : 'El cliente indicó que ya pagó. Verifica el comprobante que te enviará por WhatsApp antes de confirmar.',
         companyRows,
         `<p style="margin:20px 0 0"><a href="${esc(waUrl)}" style="display:inline-block;background:#25d366;color:#fff;text-decoration:none;padding:12px 20px;border-radius:999px;font-weight:bold">Escribir al cliente por WhatsApp</a></p>`,
       ),
@@ -146,22 +161,35 @@ export async function POST(request: Request) {
   if (validEmail && process.env.SEND_CUSTOMER_EMAIL === 'true') {
     const en = data.lang === 'en';
     const customerRows = [
-      row(en ? 'Booking code' : 'Código', esc(data.code)),
+      row(en ? 'Code' : 'Código', esc(data.code)),
       row(en ? 'Excursion' : 'Excursión', esc(data.excursion)),
       row(en ? 'Date' : 'Fecha', esc(data.date)),
       row(en ? 'Quantity' : 'Cantidad', esc(data.quantity)),
       row('Total', esc(data.total)),
+      row(en ? 'Payment' : 'Pago', esc(data.payment)),
+      row(en ? 'Your comments' : 'Tus comentarios', esc(data.message).replace(/\n/g, '<br>')),
     ].join('');
+    const intro = isRequest
+      ? en
+        ? "We received your request. Our team will contact you on WhatsApp or email to confirm availability and price."
+        : 'Recibimos tu solicitud. Nuestro equipo te contactará por WhatsApp o correo para confirmar disponibilidad y precio.'
+      : data.payment.startsWith('Efectivo')
+        ? en
+          ? "Your booking is registered. You'll pay cash on the day of the excursion. We'll contact you to confirm the time and meeting point."
+          : 'Tu reserva quedó registrada. Pagas en efectivo el día de la excursión. Te contactaremos para confirmar hora y punto de encuentro.'
+        : en
+          ? 'We received your booking. Once we verify your payment receipt on WhatsApp, your spot is confirmed.'
+          : 'Recibimos tu reserva. Cuando verifiquemos tu comprobante por WhatsApp, tu cupo queda confirmado.';
     try {
       await send({
         to: [data.email],
         reply_to: TO,
-        subject: en ? `Your booking ${data.code} · Super Buggies` : `Tu reserva ${data.code} · Super Buggies`,
+        subject: isRequest
+          ? en ? `Your request ${data.code} · Super Buggies` : `Tu solicitud ${data.code} · Super Buggies`
+          : en ? `Your booking ${data.code} · Super Buggies` : `Tu reserva ${data.code} · Super Buggies`,
         html: layout(
           en ? `Thanks, ${esc(data.name)}!` : `¡Gracias, ${esc(data.name)}!`,
-          en
-            ? 'We received your booking. Your spot is secured once we receive the payment or deposit. Send us your receipt on WhatsApp.'
-            : 'Recibimos tu reserva. Tu cupo queda asegurado al recibir el pago o depósito. Envíanos tu comprobante por WhatsApp.',
+          intro,
           customerRows,
           `<p style="margin:20px 0 0"><a href="https://wa.me/18098414125" style="display:inline-block;background:#25d366;color:#fff;text-decoration:none;padding:12px 20px;border-radius:999px;font-weight:bold">WhatsApp 809-841-4125</a></p>
            <p style="margin:16px 0 0;font-size:13px;color:#7a6f63"><a href="${SITE}/formas-de-pago" style="color:${ORANGE}">${en ? 'Payment options' : 'Formas de pago'}</a> · <a href="${SITE}/terminos" style="color:${ORANGE}">${en ? 'Terms' : 'Términos'}</a></p>`,
