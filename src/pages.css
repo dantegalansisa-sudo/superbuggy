@@ -156,3 +156,5 @@
   .tour__cta span { width: 28px; height: 28px; }
   .tour__actions .btn--sm { padding: 9px 16px; }
 }
+
+.pay__note { font-size: 0.84rem; padding: 10px 14px; border-radius: 12px; background: var(--cream); border: 1px dashed var(--sand-2); }

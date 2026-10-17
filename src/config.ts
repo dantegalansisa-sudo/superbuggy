@@ -19,7 +19,9 @@ export const CONFIG = {
 export const PAYMENTS = {
   // Usuario de PayPal.me (cuenta personal por ahora). Ej.: 'superbuggies' → https://paypal.me/superbuggies
   // Mientras esté vacío, el botón de PayPal pide el enlace de pago por WhatsApp.
-  paypalMe: '',
+  paypalMe: 'samaleej',
+  // Nombre que ve el cliente en PayPal al pagar (cuenta personal)
+  paypalName: 'Samalee Santos',
   bank: {
     name: 'Banco Popular Dominicano',
     holder: 'Victoriano Super Buggies S.R.L.',

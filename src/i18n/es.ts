@@ -129,6 +129,7 @@ const es = {
     paypal: 'PayPal o tarjeta',
     paypalText: 'Paga con tu cuenta PayPal o con tarjeta de crédito/débito.',
     paypalCta: 'Pagar con PayPal',
+    paypalNote: (name: string) => `El pago aparece a nombre de ${name}, en representación de Super Buggies. Envíanos el comprobante por WhatsApp.`,
     paypalAsk: 'Pedir enlace de pago',
     paypalWa: 'Hola Super Buggies, quiero pagar mi reserva con PayPal. ¿Me envían el enlace de pago?',
     bank: 'Transferencia bancaria',

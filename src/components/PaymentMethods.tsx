@@ -31,6 +31,7 @@ export default function PaymentMethods() {
         <div className="pay__brands" aria-hidden="true">
           <span>PayPal</span><span>Visa</span><span>Mastercard</span>
         </div>
+        {paypal && PAYMENTS.paypalName && <p className="pay__note">{p.paypalNote(PAYMENTS.paypalName)}</p>}
         {paypal ? (
           <a className="btn btn--paypal" href={paypal} target="_blank" rel="noopener noreferrer">
             {p.paypalCta} <ExternalLink size={16} />
