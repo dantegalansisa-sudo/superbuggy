@@ -184,11 +184,46 @@ const es = {
   },
   mobileBar: { home: 'Inicio', tours: 'Tours', book: 'Reservar', wa: 'WhatsApp' },
   seo: {
-    homeTitle: 'Super Buggies · Tours en buggy y excursiones en Puerto Plata',
-    homeDesc: 'Tours en buggy, four wheel, party boat, pesca, cascadas y más excursiones en Puerto Plata, República Dominicana. Reserva en línea o por WhatsApp al 809-841-4125.',
+    homeTitle: 'Excursiones en Buggy en Puerto Plata | Super Buggies Maimón',
+    homeDesc: 'Tours en buggy y four wheel en Puerto Plata desde Maimón: río, lodo y Playa Teco en 2 h 30 min. Buggy doble US$99, familiar US$44 p/p. Party boat, pesca, cascadas y más. Reserva en línea.',
     excursionTitle: (name: string) => `${name} en Puerto Plata · Super Buggies`,
+    excursionDesc: (short: string) => `${short} Excursión en Puerto Plata (Maimón), República Dominicana. Reserva en línea o por WhatsApp.`,
     paymentsDesc: 'Paga tu excursión con PayPal, tarjeta o transferencia a Banco Popular. Reserva primero y te confirmamos por WhatsApp.',
     notFoundTitle: 'Página no encontrada · Super Buggies',
+  },
+  seoIntro: {
+    eyebrow: 'Tours en Puerto Plata',
+    title: 'Excursiones en buggy',
+    titleAccent: 'en Puerto Plata',
+    paragraphs: [
+      'Super Buggies organiza tours en buggy y four wheel en Puerto Plata, República Dominicana, desde Maimón Guzmancito, en la zona del puerto de cruceros Amber Cove. En una sola excursión de 2 horas y media recorres el río, caminos rocosos, lodo y polvo, paras en una casa tradicional dominicana y terminas en Playa Teco.',
+      'Es una de las aventuras más buscadas por turistas, cruceristas y familias en la costa norte. Elige buggy doble (2 personas) o buggy familiar (4 personas), o maneja tu propio four wheel. Salimos todos los días, en la mañana y en la tarde.',
+      'Además de los buggies ofrecemos party boat con BBQ y barra libre, pesca de altura, cascadas y toboganes naturales, cabalgatas, parque de monos y playas. Reserva en línea en español o inglés, paga con PayPal, transferencia o efectivo, o escríbenos por WhatsApp.',
+    ],
+    listTitle: 'Excursiones en Puerto Plata',
+    faqTitle: 'Preguntas frecuentes sobre los tours en buggy',
+    faq: [
+      {
+        q: '¿Cuánto cuesta una excursión en buggy en Puerto Plata?',
+        a: 'El buggy doble (2 personas) cuesta US$99 por buggy y el buggy familiar (4 personas) US$44 por persona. El four wheel individual cuesta US$69 por persona. Reservando por la web te incluimos los lentes.',
+      },
+      {
+        q: '¿De dónde salen los tours en buggy?',
+        a: 'Salimos desde Maimón Guzmancito, Puerto Plata, en la zona del puerto de cruceros Amber Cove. Al reservar te confirmamos la hora y el punto de encuentro por WhatsApp.',
+      },
+      {
+        q: '¿Qué incluye el tour en buggy?',
+        a: 'Una excursión de 2 horas y media por río, caminos rocosos, lodo y polvo; parada en una casa tradicional dominicana con café, frutas, agua y un shot de mamajuana; y parada en Playa Teco. Incluye casco protector, agua e instrucciones de manejo antes de salir.',
+      },
+      {
+        q: '¿Qué horarios tienen?',
+        a: 'Trabajamos todos los días de 8:00 a. m. a 6:00 p. m., con salidas en la mañana y en la tarde.',
+      },
+      {
+        q: '¿Necesito experiencia para manejar un buggy?',
+        a: 'No. Antes de salir te damos instrucciones de seguridad y una explicación de cómo manejar el vehículo.',
+      },
+    ],
   },
   notFound: {
     eyebrow: 'Error 404',

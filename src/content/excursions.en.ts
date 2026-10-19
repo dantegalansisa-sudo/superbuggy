@@ -1,4 +1,4 @@
-import type { Excursion } from '../data';
+import type { Excursion } from '../data.ts';
 
 // English text for each excursion (same slug as in data.ts). Photos, prices and duration numbers come from data.ts.
 type Translated = Pick<Excursion, 'name' | 'short' | 'description' | 'tags' | 'includes' | 'bring' | 'highlights'> &

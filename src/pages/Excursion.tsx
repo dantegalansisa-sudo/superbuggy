@@ -56,7 +56,7 @@ export default function ExcursionPage() {
 
   useSeo({
     title: ex ? t.seo.excursionTitle(ex.name) : t.seo.notFoundTitle,
-    description: ex ? `${ex.description.slice(0, 150)}…` : x.notFound,
+    description: ex ? t.seo.excursionDesc(ex.short) : x.notFound,
     path: ex ? excursionPath(ex.slug) : '/404',
     image: ex?.image,
   });

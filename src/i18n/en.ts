@@ -1,4 +1,4 @@
-import type { Dict } from './es';
+import type { Dict } from './es.ts';
 
 // English copy. Must keep exactly the same shape as es.ts.
 const en: Dict = {
@@ -186,11 +186,46 @@ const en: Dict = {
   },
   mobileBar: { home: 'Home', tours: 'Tours', book: 'Book', wa: 'WhatsApp' },
   seo: {
-    homeTitle: 'Super Buggies · Buggy tours and excursions in Puerto Plata',
-    homeDesc: 'Buggy and ATV tours, party boat, deep sea fishing, waterfalls and more excursions in Puerto Plata, Dominican Republic. Book online or on WhatsApp at +1 809-841-4125.',
+    homeTitle: 'Buggy Tours in Puerto Plata, Dominican Republic | Super Buggies',
+    homeDesc: 'Buggy and ATV tours in Puerto Plata from Maimón, near Amber Cove: river, mud and Teco Beach in 2.5 hours. Double buggy US$99, family buggy US$44 per person. Party boat, fishing, waterfalls. Book online.',
     excursionTitle: (name: string) => `${name} in Puerto Plata · Super Buggies`,
+    excursionDesc: (short: string) => `${short} Excursion in Puerto Plata (Maimón), Dominican Republic. Book online or on WhatsApp.`,
     paymentsDesc: 'Pay for your excursion with PayPal, card or bank transfer to Banco Popular. Book first and we confirm on WhatsApp.',
     notFoundTitle: 'Page not found · Super Buggies',
+  },
+  seoIntro: {
+    eyebrow: 'Puerto Plata tours',
+    title: 'Buggy tours',
+    titleAccent: 'in Puerto Plata',
+    paragraphs: [
+      'Looking for buggy tours near you in Puerto Plata? Super Buggies runs buggy and ATV excursions in Puerto Plata, Dominican Republic, from Maimón Guzmancito, in the Amber Cove cruise port area. In one 2.5-hour tour you drive through the river, rocky trails, mud and dust, stop at a traditional Dominican house and finish at Teco Beach.',
+      'It is one of the most popular adventures for tourists, cruise passengers and families on the north coast. Choose a double buggy (2 people) or a family buggy (4 people), or drive your own ATV. We go out every day, morning and afternoon.',
+      'Besides buggies we offer a party boat with BBQ and open bar, deep sea fishing, waterfalls and natural slides, horseback riding, a monkey park and beaches. Book online in English or Spanish, pay by PayPal, bank transfer or cash, or message us on WhatsApp.',
+    ],
+    listTitle: 'Excursions in Puerto Plata',
+    faqTitle: 'Buggy tour FAQ',
+    faq: [
+      {
+        q: 'How much is a buggy tour in Puerto Plata?',
+        a: 'The double buggy (2 people) is US$99 per buggy and the family buggy (4 people) is US$44 per person. The single-rider ATV is US$69 per person. Goggles are included when you book online.',
+      },
+      {
+        q: 'Where do the buggy tours start?',
+        a: 'We start from Maimón Guzmancito, Puerto Plata, in the Amber Cove cruise port area. When you book we confirm the time and meeting point on WhatsApp.',
+      },
+      {
+        q: 'What does the buggy tour include?',
+        a: 'A 2.5-hour ride through the river, rocky trails, mud and dust; a stop at a traditional Dominican house with coffee, fruit, water and a Mamajuana shot; and a stop at Teco Beach. Helmet, water and a driving briefing are included.',
+      },
+      {
+        q: 'What are your hours?',
+        a: 'We operate every day from 8:00 AM to 6:00 PM, with morning and afternoon departures.',
+      },
+      {
+        q: 'Do I need experience to drive a buggy?',
+        a: 'No. Before departure we give you safety instructions and a quick explanation of how to drive the vehicle.',
+      },
+    ],
   },
   notFound: {
     eyebrow: 'Error 404',

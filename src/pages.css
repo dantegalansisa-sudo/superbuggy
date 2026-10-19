@@ -194,3 +194,27 @@
 .xbuggy__pick { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; padding: 7px 14px; border-radius: 999px; background: var(--sand); font-size: 0.82rem; font-weight: 800; }
 .xbuggy__card.is-on .xbuggy__pick { background: var(--orange); color: #fff; }
 @media (max-width: 600px) { .xbuggy__grid { grid-template-columns: 1fr; } }
+
+/* Sección SEO: texto, lista de excursiones y preguntas frecuentes */
+.seo { background: var(--sand); }
+.seo__grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(32px, 5vw, 70px); align-items: start; }
+.seo .shead { margin-bottom: 22px; }
+.seo__p { color: var(--ink-2); font-size: 1.02rem; line-height: 1.75; margin-bottom: 14px; max-width: 640px; }
+.seo__h3 { font-family: var(--f-display); font-size: 1.35rem; margin: 26px 0 14px; }
+.seo__h3--faq { margin-top: 0; }
+.seo__list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.seo__list a { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 14px; background: #fff; box-shadow: var(--shadow-sm); transition: transform 0.2s, color 0.2s; }
+.seo__list a:hover { transform: translateX(4px); color: var(--orange); }
+.seo__list span { flex: 1; font-weight: 700; font-size: 0.92rem; }
+.seo__list small { color: var(--orange-2); font-weight: 800; font-size: 0.78rem; white-space: nowrap; }
+.seo__list svg { color: var(--orange); flex-shrink: 0; }
+.seo__faq { display: grid; gap: 10px; }
+.seo__faq details { background: #fff; border-radius: 16px; box-shadow: var(--shadow-sm); border: 1.5px solid transparent; transition: border-color 0.3s; }
+.seo__faq details[open] { border-color: rgba(224, 86, 27, 0.35); }
+.seo__faq summary { list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 16px 18px; font-weight: 700; cursor: pointer; }
+.seo__faq summary::-webkit-details-marker { display: none; }
+.seo__faq summary span { flex-shrink: 0; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--orange-soft); color: var(--orange); transition: transform 0.3s; }
+.seo__faq details[open] summary span { transform: rotate(45deg); }
+.seo__faq p { padding: 0 18px 16px; color: var(--muted); line-height: 1.6; }
+@media (max-width: 900px) { .seo__grid { grid-template-columns: 1fr; } }
+@media (max-width: 600px) { .seo__list { grid-template-columns: 1fr; } }
