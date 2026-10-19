@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/((?!api/|assets/|images/|videos/|favicon|sitemap.xml|robots.txt).*)",
-      "destination": "/index.html"
+      "destination": "/"
     }
   ],
   "headers": [
