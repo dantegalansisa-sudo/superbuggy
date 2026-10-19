@@ -124,3 +124,14 @@
 .xcard__calc { grid-template-columns: 1fr; }
 
 .qp__people { color: var(--orange-2) !important; font-weight: 700; }
+
+/* Pasarela PayPal */
+.pp { display: grid; gap: 10px; }
+.pp__buttons { min-height: 52px; }
+.pp__loading { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 0.88rem; }
+.pp__spin { animation: pp-spin 1s linear infinite; }
+@keyframes pp-spin { to { transform: rotate(360deg); } }
+.pp__sandbox { font-size: 0.78rem; font-weight: 700; color: #8a5a00; background: #fff4d6; border-radius: 10px; padding: 6px 10px; }
+.pay__card--focus { border: 2px solid var(--orange); box-shadow: 0 0 0 6px rgba(224, 86, 27, 0.12); scroll-margin-top: calc(var(--nav-h) + 20px); }
+#transferencia { scroll-margin-top: calc(var(--nav-h) + 20px); }
+.pay__booking { padding: 10px 14px; border-radius: 12px; background: var(--orange-soft); color: var(--orange-2); font-weight: 700; font-size: 0.9rem; }

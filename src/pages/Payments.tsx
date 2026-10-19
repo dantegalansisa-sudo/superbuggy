@@ -8,11 +8,17 @@ import { useLang } from '../i18n';
 import { useBooking } from '../booking';
 import { useSeo } from '../hooks/useSeo';
 import { waLink } from '../config';
+import { useSearchParams } from 'react-router-dom';
 
 export default function PaymentsPage() {
   const { t } = useLang();
   const p = t.payments;
   const { book } = useBooking();
+  // Viene del checkout al elegir transferencia: ?reserva=SB-XXXX&monto=198#transferencia
+  const [search] = useSearchParams();
+  const code = search.get('reserva')?.slice(0, 20) || undefined;
+  const monto = Number(search.get('monto'));
+  const amount = monto > 0 ? `US$${monto.toLocaleString('en-US')}` : undefined;
   useSeo({
     title: `${p.pageTitle} · Super Buggies`,
     description: t.seo.paymentsDesc,
@@ -33,7 +39,7 @@ export default function PaymentsPage() {
           ))}
         </ol>
 
-        <PaymentMethods />
+        <PaymentMethods code={code} amount={amount} />
 
         <div className="page__ctas">
           <MagneticButton className="btn btn--primary btn--lg" onClick={() => book()}>

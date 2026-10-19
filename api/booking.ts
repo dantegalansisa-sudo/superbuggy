@@ -94,9 +94,15 @@ export async function POST(request: Request) {
   // Bots: si llenan el campo trampa, se responde OK sin enviar nada
   if (b.website) return json({ ok: true });
 
+  // Solo la función de PayPal (con la clave interna) puede marcar una reserva como pagada
+  const internal = Boolean(process.env.PAYPAL_CLIENT_SECRET) && request.headers.get('x-internal-key') === process.env.PAYPAL_CLIENT_SECRET;
+  const rawStatus = clip(b.status || 'Pendiente de pago', 60);
+  const safeStatus = !internal && /pagad|paid/i.test(rawStatus) ? 'Pendiente · verificar pago' : rawStatus;
+  const rawPayment = clip(b.payment, 120);
+  const safePayment = !internal && /transacci|transaction/i.test(rawPayment) ? `${rawPayment} (sin verificar)` : rawPayment;
   const data = {
     code: clip(b.code, 20),
-    status: clip(b.status || 'Pendiente de pago', 60),
+    status: safeStatus,
     excursion: clip(b.excursion),
     date: clip(b.date, 20),
     quantity: clip(b.quantity, 80),
@@ -107,7 +113,7 @@ export async function POST(request: Request) {
     pickup: clip(b.pickup),
     lang: b.lang === 'en' ? 'en' : 'es',
     type: b.type === 'request' ? 'request' : 'booking',
-    payment: clip(b.payment, 120),
+    payment: safePayment,
     message: clip(b.message, 1000),
   };
   const isRequest = data.type === 'request';

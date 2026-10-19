@@ -8,7 +8,7 @@ import { PAYMENTS, paypalLink, waLink } from '../config';
 import { cardVariants, containerVariants } from '../utils/easings';
 
 // Tarjetas de pago: PayPal (enlace PayPal.me) y transferencia a Banco Popular
-export default function PaymentMethods() {
+export default function PaymentMethods({ code, amount }: { code?: string; amount?: string }) {
   const { t } = useLang();
   const p = t.payments;
   const toast = useToast();
@@ -55,8 +55,9 @@ export default function PaymentMethods() {
         <button className="btn btn--primary pay__push" onClick={() => book()}>{p.cashCta}</button>
       </motion.article>
 
-      <motion.article className="pay__card" variants={cardVariants}>
+      <motion.article className={`pay__card${code ? ' pay__card--focus' : ''}`} variants={cardVariants} id="transferencia">
         <span className="pay__icon"><Building2 size={24} /></span>
+        {code && <p className="pay__booking">{p.transferFor(code, amount ?? '')}</p>}
         <h3>{p.bank}</h3>
         <p>{p.bankText}</p>
         <ul className="pay__accounts">
@@ -75,7 +76,7 @@ export default function PaymentMethods() {
           <div><dt>{p.holder}</dt><dd>{PAYMENTS.bank.holder}</dd></div>
           <div><dt>{p.rnc}</dt><dd>{PAYMENTS.bank.rnc}</dd></div>
         </dl>
-        <a className="btn btn--wa" href={waLink(p.receiptWa)} target="_blank" rel="noopener noreferrer">
+        <a className="btn btn--wa" href={waLink(code ? p.receiptFor(code, amount ?? '') : p.receiptWa)} target="_blank" rel="noopener noreferrer">
           <WhatsAppIcon size={16} /> {p.receipt}
         </a>
       </motion.article>

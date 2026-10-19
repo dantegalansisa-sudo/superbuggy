@@ -5,6 +5,8 @@ import { defineConfig, type Plugin } from 'vite'
 import { CONFIG } from './src/config.ts'
 import { EXCURSIONS } from './src/data.ts'
 import { EXCURSIONS_EN } from './src/content/excursions.en.ts'
+import { DEPOSIT_PERCENT, PRICES } from './api/_lib/prices.ts'
+import { PAYMENTS } from './src/config.ts'
 import es from './src/i18n/es.ts'
 import en from './src/i18n/en.ts'
 
@@ -151,7 +153,27 @@ function staticPages(): Plugin {
   }
 }
 
+// El servidor cobra con PayPal usando api/_lib/prices.ts: el build falla si no coincide con src/data.ts
+function checkPrices(): Plugin {
+  return {
+    name: 'check-prices',
+    buildStart() {
+      const errors: string[] = []
+      for (const e of EXCURSIONS) {
+        const p = PRICES[e.slug]
+        if (e.options?.length) {
+          for (const o of e.options) if (p?.options?.[o.id] !== o.priceUSD) errors.push(`${e.slug}/${o.id}: web ${o.priceUSD} ≠ servidor ${p?.options?.[o.id]}`)
+        } else if (e.priceUSD != null && p?.base !== e.priceUSD) errors.push(`${e.slug}: web ${e.priceUSD} ≠ servidor ${p?.base}`)
+        else if (e.priceUSD == null && p) errors.push(`${e.slug}: sin precio en la web pero sí en el servidor`)
+      }
+      for (const slug of Object.keys(PRICES)) if (!EXCURSIONS.some((e) => e.slug === slug)) errors.push(`${slug}: está en el servidor pero no en la web`)
+      if (DEPOSIT_PERCENT !== PAYMENTS.depositPercent) errors.push(`Depósito: web ${PAYMENTS.depositPercent}% ≠ servidor ${DEPOSIT_PERCENT}%`)
+      if (errors.length) this.error(`Los precios de api/_lib/prices.ts no coinciden con src/data.ts: ${errors.join(' | ')}`)
+    },
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), seoFiles(), staticPages()],
+  plugins: [checkPrices(), react(), seoFiles(), staticPages()],
 })

@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Banknote, Building2, CalendarDays, CheckCircle2, Clock, Copy, CreditCard, Lock, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Banknote, Building2, CalendarDays, CheckCircle2, Clock, CreditCard, Lock, ShieldCheck } from 'lucide-react';
 import WhatsAppIcon from './WhatsAppIcon';
-import { useToast } from './Toast';
+import PayPalPay from './PayPalPay';
 import QtyPicker from './QtyPicker';
 import { useLang } from '../i18n';
 import { useCatalog } from '../content/catalog';
@@ -12,7 +12,7 @@ import { EXCURSIONS } from '../data';
 import type { Prefill } from '../booking';
 import { countsLabel, defaultCounts, fmt, priceLines, totalOf, type Counts } from '../content/pricing';
 
-type Method = 'paypal' | 'bank' | 'cash';
+type Method = 'card' | 'bank' | 'cash';
 
 const today = () => new Date().toISOString().slice(0, 10);
 // Código corto para identificar la reserva en el pago y en WhatsApp
@@ -21,7 +21,7 @@ const newCode = () => 'SB-' + Math.random().toString(36).slice(2, 7).toUpperCase
 export default function Checkout({ prefill, onClose }: { prefill?: Prefill; onClose?: () => void }) {
   const { t, lang } = useLang();
   const c = t.checkout;
-  const toast = useToast();
+  const navigate = useNavigate();
   const { all } = useCatalog();
 
   // La excursión llega como slug o como nombre (en cualquier idioma)
@@ -36,7 +36,10 @@ export default function Checkout({ prefill, onClose }: { prefill?: Prefill; onCl
   const [email, setEmail] = useState('');
   const [pickup, setPickup] = useState('');
   const [mode, setMode] = useState<'full' | 'deposit'>('full');
-  const [method, setMethod] = useState<Method>('paypal');
+  const [method, setMethod] = useState<Method>('card');
+  // Pasarela de PayPal: true mientras esté disponible; si no está configurada se usa el enlace PayPal.me
+  const [gateway, setGateway] = useState(true);
+  const [paid, setPaid] = useState<{ amount: string; id: string } | null>(null);
   const [hint, setHint] = useState('');
   const [code, setCode] = useState(newCode);
   const [done, setDone] = useState(false);
@@ -120,16 +123,44 @@ export default function Checkout({ prefill, onClose }: { prefill?: Prefill; onCl
     setStep(3);
   };
 
-  // PayPal y transferencia: correo + WhatsApp para enviar el comprobante.
+  // Datos de la reserva para el correo que envía el servidor al confirmar un pago con PayPal
+  const bookingData = () => ({
+    code,
+    excursion: EXCURSIONS.find((e) => e.slug === slug)?.name ?? ex?.name,
+    date,
+    quantity: qtyLabel,
+    total: total ? fmt(total) : '',
+    name,
+    phone,
+    email,
+    pickup,
+    lang,
+  });
+
+  // Pago con la pasarela confirmado por el servidor (el correo lo envía la función de PayPal)
+  const onGatewayPaid = (amount: string, id: string) => {
+    setPaid({ amount, id });
+    setLastVia(c.wa.viaPaypal(amount));
+    setDone(true);
+  };
+
+  // PayPal.me (sin pasarela): correo + WhatsApp para el comprobante.
+  // Transferencia: registra la reserva y lleva a los datos de las cuentas.
   // Efectivo: solo correo; WhatsApp queda como opción en la pantalla final.
   const finish = (m: Method) => {
     const amount = amountLabel || c.priceAsk;
-    const via = m === 'paypal' ? c.wa.viaPaypal(amount) : m === 'bank' ? c.wa.viaBank(amount) : c.wa.viaCash;
+    if (m === 'bank') {
+      sendEmail('Pendiente de pago por transferencia', `Transferencia Banco Popular ${amount}`);
+      onClose?.();
+      navigate(`/formas-de-pago?reserva=${encodeURIComponent(code)}${payAmount ? `&monto=${payAmount}` : ''}#transferencia`);
+      return;
+    }
+    const via = m === 'card' ? c.wa.viaPaypal(amount) : c.wa.viaCash;
     const status = m === 'cash' ? 'Confirmada · paga en efectivo el día del tour' : 'Pago enviado · verificar comprobante';
-    const payment = m === 'paypal' ? `PayPal ${amount}` : m === 'bank' ? `Transferencia Banco Popular ${amount}` : `Efectivo el día del tour (${total ? fmt(total) : 'a confirmar'})`;
+    const payment = m === 'card' ? `PayPal.me ${amount}` : `Efectivo el día del tour (${total ? fmt(total) : 'a confirmar'})`;
     sendEmail(status, payment);
     setLastVia(via);
-    if (m !== 'cash') window.open(waLink(waMessage(via)), '_blank', 'noopener');
+    if (m === 'card') window.open(waLink(waMessage(via)), '_blank', 'noopener');
     setDone(true);
   };
 
@@ -143,14 +174,6 @@ export default function Checkout({ prefill, onClose }: { prefill?: Prefill; onCl
     setPickup('');
   };
 
-  const copy = async (value: string) => {
-    try {
-      await navigator.clipboard.writeText(value);
-      toast(t.payments.copied);
-    } catch {
-      toast(value);
-    }
-  };
 
   const options = useMemo(() => all.map((e) => ({ value: e.slug, label: e.priceUSD ? `${e.name} · ${fmt(e.priceUSD)}` : e.name })), [all]);
 
@@ -158,8 +181,8 @@ export default function Checkout({ prefill, onClose }: { prefill?: Prefill; onCl
     return (
       <motion.div className="co co__done" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
         <CheckCircle2 size={60} />
-        <h3>{c.doneTitle}</h3>
-        <p>{c.doneText(code)}{/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? ` ${c.doneCopy}` : ''}</p>
+        <h3>{paid ? c.paidTitle : c.doneTitle}</h3>
+        <p>{paid ? c.paidText(code, paid.amount) : c.doneText(code)}{/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? ` ${c.doneCopy}` : ''}</p>
         <a className="btn btn--wa" href={waLink(waMessage(lastVia))} target="_blank" rel="noopener noreferrer"><WhatsAppIcon size={16} /> {c.waAlso}</a>
         <div className="co__actions co__actions--center">
           <button className="btn btn--outline btn--sm" onClick={restart}>{c.doneAgain}</button>
@@ -285,7 +308,7 @@ export default function Checkout({ prefill, onClose }: { prefill?: Prefill; onCl
             <p className="co__label">{c.method}</p>
             <div className="co__methods" role="radiogroup" aria-label={c.method}>
               {([
-                ['paypal', CreditCard, c.paypal, c.paypalDesc],
+                ['card', CreditCard, c.card, c.cardDesc],
                 ['bank', Building2, c.bank, c.bankDesc],
                 ['cash', Banknote, c.cash, c.cashDesc],
               ] as const).map(([m, Icon, title, desc]) => (
@@ -297,29 +320,38 @@ export default function Checkout({ prefill, onClose }: { prefill?: Prefill; onCl
             </div>
 
             <div className="co__pay">
-              {method === 'paypal' && (
-                <>
-                  <a className="btn btn--paypal btn--lg" href={paypalLink(payAmount) || waLink(t.payments.paypalWa)} target="_blank" rel="noopener noreferrer">
-                    {payAmount ? c.paypalBtn(amountLabel) : t.payments.paypalCta}
-                  </a>
-                  <p className="co__hint">{c.paypalSteps(code)}</p>
-                  {PAYMENTS.paypalName && <p className="co__hint">{t.payments.paypalNote(PAYMENTS.paypalName)}</p>}
-                  <button className="btn btn--wa" onClick={() => finish('paypal')}><WhatsAppIcon size={16} /> {c.paid}</button>
-                </>
+              {method === 'card' && (
+                gateway && total ? (
+                  <>
+                    {payAmount && <p className="co__cash"><span>{c.payNow}</span> {amountLabel}</p>}
+                    <PayPalPay
+                      slug={slug}
+                      counts={counts}
+                      mode={mode}
+                      code={code}
+                      excursion={EXCURSIONS.find((e) => e.slug === slug)?.name ?? ex?.name ?? ''}
+                      booking={bookingData()}
+                      onPaid={onGatewayPaid}
+                      onUnavailable={() => setGateway(false)}
+                    />
+                  </>
+                ) : (
+                  <>
+                    {/* Alternativa mientras la pasarela no esté configurada: enlace PayPal.me */}
+                    <a className="btn btn--paypal btn--lg" href={paypalLink(payAmount) || waLink(t.payments.paypalWa)} target="_blank" rel="noopener noreferrer">
+                      {payAmount ? c.paypalBtn(amountLabel) : t.payments.paypalCta}
+                    </a>
+                    <p className="co__hint">{c.paypalSteps(code)}</p>
+                    {PAYMENTS.paypalName && <p className="co__hint">{t.payments.paypalNote(PAYMENTS.paypalName)}</p>}
+                    <button className="btn btn--wa" onClick={() => finish('card')}><WhatsAppIcon size={16} /> {c.paid}</button>
+                  </>
+                )
               )}
               {method === 'bank' && (
                 <>
-                  <p className="co__hint">{payAmount ? c.bankAmount(amountLabel) : t.payments.bankText}</p>
-                  <ul className="pay__accounts">
-                    {PAYMENTS.bank.accounts.map((a) => (
-                      <li key={a.number}>
-                        <div><small>{a.label}</small><strong>{a.number}</strong></div>
-                        <button onClick={() => copy(a.number)}><Copy size={16} /> {t.payments.copy}</button>
-                      </li>
-                    ))}
-                  </ul>
-                  <p className="co__hint">{PAYMENTS.bank.name} · {PAYMENTS.bank.holder} · RNC {PAYMENTS.bank.rnc}<br />{c.bankFx}</p>
-                  <button className="btn btn--wa" onClick={() => finish('bank')}><WhatsAppIcon size={16} /> {c.transferred}</button>
+                  <p className="co__hint">{c.bankNote}</p>
+                  {payAmount && <p className="co__cash"><span>{c.payNow}</span> {amountLabel}</p>}
+                  <button className="btn btn--primary btn--lg" onClick={() => finish('bank')}><Building2 size={18} /> {c.bankGo}</button>
                 </>
               )}
               {method === 'cash' && (
