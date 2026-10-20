@@ -118,7 +118,8 @@ export default function Checkout({ prefill, onClose }: { prefill?: Prefill; onCl
     setStep(2);
   };
   const goStep3 = () => {
-    if (!name.trim() || !phone.trim()) return setHint(c.required2);
+    // El correo es obligatorio: ahí se envía la confirmación de la reserva
+    if (!name.trim() || !phone.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return setHint(c.required2);
     setHint('');
     setStep(3);
   };
@@ -261,8 +262,8 @@ export default function Checkout({ prefill, onClose }: { prefill?: Prefill; onCl
             </div>
             <div className="co__row">
               <label className="co__field">
-                <span>{c.email}</span>
-                <input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                <span>{c.email} *</span>
+                <input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={c.emailHint} />
               </label>
               <label className="co__field">
                 <span>{c.pickup}</span>
