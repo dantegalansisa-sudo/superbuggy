@@ -175,7 +175,12 @@ export async function POST(request: Request) {
       row(en ? 'Payment' : 'Pago', esc(data.payment)),
       row(en ? 'Your comments' : 'Tus comentarios', esc(data.message).replace(/\n/g, '<br>')),
     ].join('');
-    const intro = isRequest
+    const paidOnline = internal && /pagad/i.test(data.status);
+    const intro = paidOnline
+      ? en
+        ? "Payment received! Your booking is confirmed. We'll message you on WhatsApp to confirm the time and meeting point."
+        : '¡Pago recibido! Tu reserva está confirmada. Te escribimos por WhatsApp para confirmar la hora y el punto de encuentro.'
+      : isRequest
       ? en
         ? "We received your request. Our team will contact you on WhatsApp or email to confirm availability and price."
         : 'Recibimos tu solicitud. Nuestro equipo te contactará por WhatsApp o correo para confirmar disponibilidad y precio.'

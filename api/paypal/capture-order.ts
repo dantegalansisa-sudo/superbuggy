@@ -3,6 +3,7 @@ import { paypalApi, paypalEnabled } from '../_lib/paypal.js';
 type Capture = {
   id: string;
   status: string;
+  payer?: { email_address?: string; name?: { given_name?: string; surname?: string } };
   purchase_units?: { payments?: { captures?: { id: string; status: string; amount: { value: string; currency_code: string } }[] } }[];
 };
 
@@ -34,12 +35,18 @@ export async function POST(request: Request) {
 
   // Aviso por correo con la función de reservas (mismo diseño de correo)
   const amount = `US$${cap!.amount.value}`;
+  // Si el cliente no escribió su correo en la web, se usa el de su cuenta de PayPal para enviarle la confirmación
+  const booking: Record<string, unknown> = { ...(b.booking ?? {}) };
+  const typed = String(booking.email ?? '').trim();
+  const payerEmail = result.payer?.email_address ?? '';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(typed) && payerEmail) booking.email = payerEmail;
+  if (!String(booking.name ?? '').trim()) booking.name = [result.payer?.name?.given_name, result.payer?.name?.surname].filter(Boolean).join(' ');
   try {
     await fetch(new URL('/api/booking', request.url), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-internal-key': process.env.PAYPAL_CLIENT_SECRET ?? '' },
       body: JSON.stringify({
-        ...(b.booking ?? {}),
+        ...booking,
         type: 'booking',
         status: 'PAGADO con PayPal',
         payment: `PayPal / tarjeta ${amount} · Transacción ${cap!.id}`,
