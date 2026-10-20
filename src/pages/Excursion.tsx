@@ -10,7 +10,7 @@ import SectionHead from '../components/SectionHead';
 import { PriceTag, TourCard } from '../components/Tours';
 import NotFound from './NotFound';
 import QtyPicker from '../components/QtyPicker';
-import { defaultCounts, fmt, optionCounts, priceLines, totalOf, type Counts } from '../content/pricing';
+import { defaultCounts, fmt, optionCounts, optionGroups, priceLines, totalOf, type Counts } from '../content/pricing';
 import { useLang } from '../i18n';
 import { useBooking } from '../booking';
 import { useSeo } from '../hooks/useSeo';
@@ -65,11 +65,13 @@ export default function ExcursionPage() {
   if (!ex) return <NotFound />;
 
   const lines = priceLines(ex, t);
-  const preset = ex.options?.find((o) => o.id === search.get('buggy'));
+  // ?buggy=buggy-f4 preselecciona ese buggy (los enlaces viejos ?buggy=buggy-4 apuntan al familiar de 4)
+  const wanted = search.get('buggy') === 'buggy-4' ? 'buggy-f4' : search.get('buggy');
+  const preset = ex.options?.find((o) => o.id === wanted);
   const counts = picked.slug === ex.slug ? picked.counts : preset ? optionCounts(preset) : defaultCounts(ex);
+  const groups = optionGroups(ex.options);
   const choose = (id: string) => {
-    const o = ex.options!.find((x) => x.id === id)!;
-    setPicked({ slug: ex.slug, counts: optionCounts(o) });
+    setPicked({ slug: ex.slug, counts: { [id]: 1 } });
     document.querySelector('.xcard')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
   const total = totalOf(lines, counts);
@@ -112,14 +114,14 @@ export default function ExcursionPage() {
                   <h2 className="xbody__h"><Users size={20} /> {t.tours.chooseBuggy}</h2>
                   <p className="xbuggy__text">{t.tours.chooseBuggyText}</p>
                   <div className="xbuggy__grid">
-                    {ex.options.map((o) => {
-                      const on = (counts[o.id] ?? 0) > 0;
+                    {groups.map((g) => {
+                      const on = g.rows.some((r) => (counts[r.id] ?? 0) > 0);
                       return (
-                        <button key={o.id} className={`xbuggy__card${on ? ' is-on' : ''}`} onClick={() => choose(o.id)}>
-                          <img src={o.image ?? ex.image} alt={o.label} loading="lazy" />
+                        <button key={g.key} className={`xbuggy__card${on ? ' is-on' : ''}`} onClick={() => choose(g.defaultId)}>
+                          <img src={g.image ?? ex.image} alt={g.label} loading="lazy" />
                           <span className="xbuggy__body">
-                            <strong>{o.label}</strong>
-                            <span className="xbuggy__price">US${o.priceUSD} <small>{o.unit}</small></span>
+                            <strong>{g.label}</strong>
+                            <span className="xbuggy__price">US${g.price} <small>{g.unit}</small></span>
                             <span className="xbuggy__pick">{on ? <><Check size={14} /> {t.tours.picked}</> : t.tours.pick}</span>
                           </span>
                         </button>

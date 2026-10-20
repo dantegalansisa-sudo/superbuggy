@@ -135,3 +135,12 @@
 .pay__card--focus { border: 2px solid var(--orange); box-shadow: 0 0 0 6px rgba(224, 86, 27, 0.12); scroll-margin-top: calc(var(--nav-h) + 20px); }
 #transferencia { scroll-margin-top: calc(var(--nav-h) + 20px); }
 .pay__booking { padding: 10px 14px; border-radius: 12px; background: var(--orange-soft); color: var(--orange-2); font-weight: 700; font-size: 0.9rem; }
+
+/* Buggy familiar agrupado: 3, 4 o 5 personas */
+.qp__group { flex-direction: column; align-items: stretch !important; gap: 10px; padding: 12px 14px !important; }
+.qp__rows { display: grid; gap: 6px; }
+.qp__row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 6px 6px 12px; border-radius: 12px; background: var(--cream); border: 1.5px solid transparent; }
+.qp__row.is-on { border-color: var(--orange); background: #fff; }
+.qp__row span { font-weight: 700; font-size: 0.9rem; }
+.qp__row .co__qty { min-height: 40px; }
+.qp__row .co__qty button { width: 34px; height: 34px; }

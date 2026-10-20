@@ -6,7 +6,7 @@ import { useLang } from '../i18n';
 import { useBooking } from '../booking';
 import { excursionPath, type Excursion } from '../data';
 import { useCatalog } from '../content/catalog';
-import { optionCounts } from '../content/pricing';
+import { optionGroups, type OptGroup } from '../content/pricing';
 import { cardVariants, containerVariants } from '../utils/easings';
 
 export function PriceTag({ ex, unit = false }: { ex: Excursion; unit?: boolean }) {
@@ -16,7 +16,7 @@ export function PriceTag({ ex, unit = false }: { ex: Excursion; unit?: boolean }
       <small>{t.tours.priceFrom}</small> US${ex.priceUSD}
       {unit && (
         <em className="price__unit">
-          {ex.options?.length ? ex.options.map((o) => `${o.label}: US$${o.priceUSD}`).join(' · ') : ex.priceUnit ?? t.excursion.perPerson}
+          {ex.options?.length ? optionGroups(ex.options).map((g) => `${g.label}: US$${g.price} ${g.unit}`).join(' · ') : ex.priceUnit ?? t.excursion.perPerson}
         </em>
       )}
     </span>
@@ -25,35 +25,34 @@ export function PriceTag({ ex, unit = false }: { ex: Excursion; unit?: boolean }
   );
 }
 
-type Variant = NonNullable<Excursion['options']>[number];
-
 // Tarjeta de un tipo de buggy (doble / familiar): mismo recorrido, con ese buggy ya elegido
-export function VariantCard({ tour, v }: { tour: Excursion; v: Variant }) {
+export function VariantCard({ tour, g }: { tour: Excursion; g: OptGroup }) {
   const { t } = useLang();
   const { book } = useBooking();
-  const to = `${excursionPath(tour.slug)}?buggy=${v.id}`;
+  const to = `${excursionPath(tour.slug)}?buggy=${g.defaultId}`;
+  const family = g.rows.length > 1;
   return (
     <motion.article className="tour" variants={cardVariants} whileHover={{ y: -8 }}>
-      <Link to={to} className="tour__img" aria-label={`${t.tours.details}: ${v.label}`}>
-        <img src={v.image ?? tour.image} alt={v.label} loading="lazy" />
-        {v.seats >= 4 ? (
+      <Link to={to} className="tour__img" aria-label={`${t.tours.details}: ${g.label}`}>
+        <img src={g.image ?? tour.image} alt={g.label} loading="lazy" />
+        {family ? (
           <span className="tour__badge tour__badge--family"><Users size={14} /> {t.tours.family}</span>
         ) : (
           tour.featured && <span className="tour__badge"><Flame size={14} /> {t.tours.tag}</span>
         )}
       </Link>
       <div className="tour__body">
-        <h3><Link to={to}>{v.label}</Link></h3>
+        <h3><Link to={to}>{g.label}</Link></h3>
         <ul className="tour__tags">
           {tour.tags.map((tag) => <li key={tag}>{tag}</li>)}
         </ul>
-        <p>{v.short ?? tour.short}</p>
+        <p>{g.short ?? tour.short}</p>
         <div className="tour__meta">
-          <span className="price">US${v.priceUSD}<em className="price__unit">{v.unit}</em></span>
+          <span className="price">US${g.price}<em className="price__unit">{g.unit}</em></span>
           {tour.duration && <span><Clock size={14} /> {tour.duration}</span>}
         </div>
         <div className="tour__actions">
-          <button className="btn btn--primary btn--sm" onClick={() => book({ tour: tour.slug, counts: optionCounts(v) })}>
+          <button className="btn btn--primary btn--sm" onClick={() => book({ tour: tour.slug, counts: { [g.defaultId]: 1 } })}>
             {t.tours.book}
           </button>
           <Link to={to} className="tour__cta">
@@ -101,7 +100,7 @@ export default function Tours() {
   const { t } = useLang();
   const { book } = useBooking();
   const { tours } = useCatalog();
-  const cards = tours.reduce((n, x) => n + (x.options?.length || 1), 0);
+  const cards = tours.reduce((n, x) => n + (optionGroups(x.options).length || 1), 0);
   return (
     <section className="section" id="tours">
       <div className="container">
@@ -115,7 +114,7 @@ export default function Tours() {
         <motion.div className={`tours${cards === 2 ? ' tours--2' : cards === 3 ? ' tours--3' : ''}`} variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.15 }}>
           {tours.map((tour) =>
             tour.options?.length
-              ? tour.options.map((v) => <VariantCard key={`${tour.slug}-${v.id}`} tour={tour} v={v} />)
+              ? optionGroups(tour.options).map((g) => <VariantCard key={`${tour.slug}-${g.key}`} tour={tour} g={g} />)
               : <TourCard key={tour.slug} tour={tour} />,
           )}
         </motion.div>

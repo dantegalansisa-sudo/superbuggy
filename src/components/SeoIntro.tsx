@@ -6,6 +6,7 @@ import SectionHead from './SectionHead';
 import { useLang } from '../i18n';
 import { useCatalog } from '../content/catalog';
 import { excursionPath } from '../data';
+import { minPrice } from '../content/pricing';
 
 // Sección de texto para buscadores: "excursiones en buggy en Puerto Plata" / "buggy tours in Puerto Plata",
 // lista de todas las excursiones con precio y preguntas frecuentes (también como datos estructurados FAQPage).
@@ -28,7 +29,7 @@ export default function SeoIntro() {
   }, [s, lang]);
 
   const price = (e: (typeof all)[number]) => {
-    const p = e.options?.length ? Math.min(...e.options.map((o) => o.priceUSD)) : e.priceUSD;
+    const p = minPrice(e);
     return p ? `${t.tours.priceFrom} US$${p}` : t.tours.priceAsk;
   };
 

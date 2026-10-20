@@ -17,8 +17,22 @@ export type Excursion = {
   priceUnit?: string; // por defecto 'por persona'
   priceBasis?: 'person' | 'buggy'; // cómo se cuenta el total: por persona (defecto) o por buggy doble
   // Tipos de vehículo con su precio (ej. buggy de 2 y de 4 personas). Si existen, el cliente elige cantidades de cada uno.
-  // perPerson: el precio es por persona y el contador cuenta personas (ej. buggy familiar a US$44 por persona)
-  options?: { id: string; label: string; unit: string; seats: number; priceUSD: number; perPerson?: boolean; image?: string; short?: string }[];
+  // Cada opción se reserva por unidad (buggy). Las que comparten "group" se muestran juntas
+  // (ej. buggy familiar con 3, 4 o 5 personas) y se anuncian con su precio por persona (perPersonUSD / display).
+  options?: {
+    id: string;
+    label: string;
+    unit: string;
+    seats: number;
+    priceUSD: number; // precio por buggy (lo que se cobra)
+    image?: string;
+    short?: string;
+    group?: string;
+    groupLabel?: string;
+    rowLabel?: string;
+    display?: string; // texto de precio a mostrar en lugar del precio por buggy
+    perPersonUSD?: number;
+  }[];
   note?: string; // aviso destacado (ofertas, condiciones)
   includes: string[];
   bring: string[];
@@ -38,7 +52,7 @@ export const EXCURSIONS: Excursion[] = [
     gallery: ['/images/buggy-18-agua.webp', '/images/buggy-rio.webp', '/images/buggies-rojos.webp', '/images/buggy-naranja.webp', '/images/grupo-buggies.webp'],
     short: 'Río, lodo, caminos rocosos y Playa Teco en un solo tour.',
     description:
-      'Una sola excursión de 2 horas y media con todo incluido en el recorrido. Salimos de Maimón Guzmancito y conducirás por el río, caminos rocosos, charcos, lodo y polvo. Primera parada: una casa tradicional dominicana con café, agua, frutas frescas y un shot de mamajuana (hay baño y puedes comprar accesorios locales). Segunda parada: Playa Teco, con tiempo para bañarte, caminar y relajarte (puedes comprar comida si quieres). Después de la playa regresamos a la compañía. Eliges buggy doble (2 personas) o buggy familiar (4 personas).',
+      'Una sola excursión de 2 horas y media con todo incluido en el recorrido. Salimos de Maimón Guzmancito y conducirás por el río, caminos rocosos, charcos, lodo y polvo. Primera parada: una casa tradicional dominicana con café, agua, frutas frescas y un shot de mamajuana (hay baño y puedes comprar accesorios locales). Segunda parada: Playa Teco, con tiempo para bañarte, caminar y relajarte (puedes comprar comida si quieres). Después de la playa regresamos a la compañía. Eliges buggy doble (2 personas) o buggy familiar (3 a 5 personas).',
     tags: ['Río', 'Lodo', 'Playa Teco'],
     duration: '2 horas y 30 minutos',
     schedule: 'Salidas en la mañana y en la tarde, todos los días de 8:00 a. m. a 6:00 p. m.',
@@ -46,11 +60,24 @@ export const EXCURSIONS: Excursion[] = [
     priceUnit: 'por persona',
     options: [
       { id: 'buggy-2', label: 'Buggy doble (2 personas)', unit: 'por buggy', seats: 2, priceUSD: 99, image: '/images/buggy-18-agua.webp', short: 'Para parejas o amigos. Río, lodo y Playa Teco.' },
-      { id: 'buggy-4', label: 'Buggy familiar (4 personas)', unit: 'por persona', seats: 4, priceUSD: 44, perPerson: true, image: '/images/buggy-naranja.webp', short: 'Para familias y grupos de 4. El mismo recorrido completo.' },
+      ...([3, 4, 5] as const).map((n) => ({
+        id: `buggy-f${n}`,
+        label: `Buggy familiar (${n} personas)`,
+        rowLabel: `${n} personas`,
+        group: 'familiar',
+        groupLabel: 'Buggy familiar (3 a 5 personas)',
+        unit: 'por persona',
+        display: 'US$44 por persona',
+        perPersonUSD: 44,
+        seats: n,
+        priceUSD: 44 * n,
+        image: '/images/buggy-naranja.webp',
+        short: 'Para familias y grupos de 3 a 5 personas. El mismo recorrido completo.',
+      })),
     ],
     note: LOCAL_NOTE,
     includes: [
-      'Buggy doble (2 personas) o familiar (4 personas)',
+      'Buggy doble (2 personas) o familiar (3 a 5 personas)',
       'Casco protector',
       WEB_GOGGLES,
       'Agua potable',

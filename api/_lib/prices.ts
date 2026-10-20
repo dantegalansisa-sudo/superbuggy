@@ -1,11 +1,11 @@
 // Precios que usa el servidor para cobrar con PayPal (el monto NUNCA se toma del navegador).
 // Deben coincidir con src/data.ts: el build de la web falla si no coinciden (ver vite.config.ts).
-// base = precio por persona; options = precio por tipo de vehículo (o por persona si perPerson).
+// base = precio por persona; options = precio por buggy (familiar: US$44 × 3, 4 o 5 personas).
 
 export const DEPOSIT_PERCENT = 50;
 
 export const PRICES: Record<string, { base?: number; options?: Record<string, number> }> = {
-  'buggy-maimon-playa-teco': { options: { 'buggy-2': 99, 'buggy-4': 44 } },
+  'buggy-maimon-playa-teco': { options: { 'buggy-2': 99, 'buggy-f3': 132, 'buggy-f4': 176, 'buggy-f5': 220 } },
   'four-wheel-4x4': { base: 69 },
   'party-boat': { base: 99 },
   'cascadas-toboganes': { base: 59 },

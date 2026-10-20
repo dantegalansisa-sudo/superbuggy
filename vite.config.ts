@@ -55,7 +55,7 @@ function staticPages(): Plugin {
   const esc = (v: string) => v.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
   const link = (path: string, text: string) => `<a href="${path}">${esc(text)}</a>`
   const priceOf = (e: (typeof EXCURSIONS)[number]) => {
-    const p = e.options?.length ? Math.min(...e.options.map((o) => o.priceUSD)) : e.priceUSD
+    const p = e.options?.length ? Math.min(...e.options.map((o) => o.perPersonUSD ?? o.priceUSD)) : e.priceUSD
     return p ? ` — desde US$${p} / from US$${p}` : ''
   }
   const nav = () =>
@@ -84,7 +84,7 @@ function staticPages(): Plugin {
     const tours = EXCURSIONS.map((e): Page => {
       const x = EXCURSIONS_EN[e.slug]
       const opts = e.options?.length
-        ? `<ul>${e.options.map((o, i) => `<li>${esc(`${o.label}: US$${o.priceUSD} ${o.unit}`)}${x?.options?.[i] ? esc(` · ${x.options[i].label}: US$${o.priceUSD} ${x.options[i].unit}`) : ''}</li>`).join('')}</ul>`
+        ? `<ul>${e.options.map((o, i) => `<li>${esc(`${o.label}: ${o.display ?? `US$${o.priceUSD} ${o.unit}`}`)}${x?.options?.[i] ? esc(` · ${x.options[i].label}: ${x.options[i].display ?? `US$${o.priceUSD} ${x.options[i].unit}`}`) : ''}</li>`).join('')}</ul>`
         : e.priceUSD ? `<p>US$${e.priceUSD} ${esc(e.priceUnit ?? 'por persona')}</p>` : ''
       return {
         path: `/excursiones/${e.slug}`,
@@ -105,7 +105,7 @@ function staticPages(): Plugin {
           image: e.gallery.map((g) => CONFIG.siteUrl + g),
           url: `${CONFIG.siteUrl}/excursiones/${e.slug}`,
           provider: { '@type': 'TravelAgency', name: CONFIG.brand, telephone: '+1-809-841-4125', url: CONFIG.siteUrl },
-          ...(e.priceUSD ? { offers: { '@type': 'Offer', price: e.options?.length ? Math.min(...e.options.map((o) => o.priceUSD)) : e.priceUSD, priceCurrency: 'USD' } } : {}),
+          ...(e.priceUSD ? { offers: { '@type': 'Offer', price: e.options?.length ? Math.min(...e.options.map((o) => o.perPersonUSD ?? o.priceUSD)) : e.priceUSD, priceCurrency: 'USD' } } : {}),
         },
       }
     })

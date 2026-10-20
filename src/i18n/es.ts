@@ -199,7 +199,7 @@ const es = {
     titleAccent: 'en Puerto Plata',
     paragraphs: [
       'Super Buggies organiza tours en buggy y four wheel en Puerto Plata, República Dominicana, desde Maimón Guzmancito, en la zona del puerto de cruceros Amber Cove. En una sola excursión de 2 horas y media recorres el río, caminos rocosos, lodo y polvo, paras en una casa tradicional dominicana y terminas en Playa Teco.',
-      'Es una de las aventuras más buscadas por turistas, cruceristas y familias en la costa norte. Elige buggy doble (2 personas) o buggy familiar (4 personas), o maneja tu propio four wheel. Salimos todos los días, en la mañana y en la tarde.',
+      'Es una de las aventuras más buscadas por turistas, cruceristas y familias en la costa norte. Elige buggy doble (2 personas) o buggy familiar (3 a 5 personas), o maneja tu propio four wheel. Salimos todos los días, en la mañana y en la tarde.',
       'Además de los buggies ofrecemos party boat con BBQ y barra libre, pesca de altura, cascadas y toboganes naturales, cabalgatas, parque de monos y playas. Reserva en línea en español o inglés, paga con PayPal, transferencia o efectivo, o escríbenos por WhatsApp.',
     ],
     listTitle: 'Excursiones en Puerto Plata',
@@ -207,7 +207,7 @@ const es = {
     faq: [
       {
         q: '¿Cuánto cuesta una excursión en buggy en Puerto Plata?',
-        a: 'El buggy doble (2 personas) cuesta US$99 por buggy y el buggy familiar (4 personas) US$44 por persona. El four wheel individual cuesta US$69 por persona. Reservando por la web te incluimos los lentes.',
+        a: 'El buggy doble (2 personas) cuesta US$99 por buggy y el buggy familiar (3 a 5 personas) US$44 por persona. El four wheel individual cuesta US$69 por persona. Reservando por la web te incluimos los lentes.',
       },
       {
         q: '¿De dónde salen los tours en buggy?',
@@ -243,7 +243,7 @@ const es = {
     people: 'Personas',
     buggies: 'Buggies dobles',
     upTo: (n: number) => `hasta ${n} personas`,
-    vehicles: 'Tipo de buggy y cantidad',
+    vehicles: 'Elige tus buggies',
     buggiesHint: (n: number) => `${n} buggy${n === 1 ? '' : 's'} · hasta ${n * 2} personas`,
     unitPerson: 'por persona',
     unitBuggy: 'por buggy doble',

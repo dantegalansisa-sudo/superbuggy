@@ -201,7 +201,7 @@ const en: Dict = {
     titleAccent: 'in Puerto Plata',
     paragraphs: [
       'Looking for buggy tours near you in Puerto Plata? Super Buggies runs buggy and ATV excursions in Puerto Plata, Dominican Republic, from Maimón Guzmancito, in the Amber Cove cruise port area. In one 2.5-hour tour you drive through the river, rocky trails, mud and dust, stop at a traditional Dominican house and finish at Teco Beach.',
-      'It is one of the most popular adventures for tourists, cruise passengers and families on the north coast. Choose a double buggy (2 people) or a family buggy (4 people), or drive your own ATV. We go out every day, morning and afternoon.',
+      'It is one of the most popular adventures for tourists, cruise passengers and families on the north coast. Choose a double buggy (2 people) or a family buggy (3 to 5 people), or drive your own ATV. We go out every day, morning and afternoon.',
       'Besides buggies we offer a party boat with BBQ and open bar, deep sea fishing, waterfalls and natural slides, horseback riding, a monkey park and beaches. Book online in English or Spanish, pay by PayPal, bank transfer or cash, or message us on WhatsApp.',
     ],
     listTitle: 'Excursions in Puerto Plata',
@@ -209,7 +209,7 @@ const en: Dict = {
     faq: [
       {
         q: 'How much is a buggy tour in Puerto Plata?',
-        a: 'The double buggy (2 people) is US$99 per buggy and the family buggy (4 people) is US$44 per person. The single-rider ATV is US$69 per person. Goggles are included when you book online.',
+        a: 'The double buggy (2 people) is US$99 per buggy and the family buggy (3 to 5 people) is US$44 per person. The single-rider ATV is US$69 per person. Goggles are included when you book online.',
       },
       {
         q: 'Where do the buggy tours start?',
@@ -245,7 +245,7 @@ const en: Dict = {
     people: 'People',
     buggies: 'Double buggies',
     upTo: (n: number) => `up to ${n} people`,
-    vehicles: 'Buggy type and quantity',
+    vehicles: 'Choose your buggies',
     buggiesHint: (n: number) => `${n} ${n === 1 ? 'buggy' : 'buggies'} · up to ${n * 2} people`,
     unitPerson: 'per person',
     unitBuggy: 'per double buggy',
